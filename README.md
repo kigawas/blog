@@ -1,3 +1,3 @@
 kigawas.github.io
 ===
-Personal blog powered by Jekyll
+Personal blog powered by Jekyll.
