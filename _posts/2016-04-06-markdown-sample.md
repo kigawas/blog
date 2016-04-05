@@ -1,7 +1,8 @@
 ---
 layout: post
-title: 'Hello World!'
+title: Hello World!
 categories: Meta
+excerpt: Hello World! 
 ---
 
 Hello World!
