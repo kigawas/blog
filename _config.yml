@@ -8,7 +8,8 @@
 # Site settings
 title: map(learn, world)
 email: to.be.impressive@gmail.com
-description: > Stay simple, stay naive.
+description: >
+  Stay simple, stay naive.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://kigawas.github.io" # the base hostname & protocol for your site
 twitter_username: kigawas
@@ -16,3 +17,10 @@ github_username:  kigawas
 
 # Build settings
 markdown: kramdown
+# paginate
+gems: [jekyll-paginate]
+paginate_path: "/page/:num/"
+paginate: 4
+# sass
+sass:
+  sass_dir: assets/sass
