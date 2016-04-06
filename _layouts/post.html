@@ -12,15 +12,14 @@ layout: default
     </header>
 
     <div class="info">
-
         <span class="date">
-      <span class="month">{{ page.date | date: '%b' }}</span><span class="day"> {{ page.date | date: '%d' }}</span>
+        <span class="month">{{ page.date | date: '%b' }}</span><span class="day"> {{ page.date | date: '%d' }}</span>
         <span class="year">, {{ page.date | date: '%Y' }}</span>
         </span>
 
         <ul class="stats">
             <li><a href="{{site.url}}{{page.url}}#disqus_thread" class="icon fa-comment">0</a></li>
-            <li><a href="#" class="icon fa-heart">0</a></li>
+            <li><a href="{{site.url}}{{post.url}}" class="icon fa-book">{{page.content | number_of_words }} words.</a></li>
         </ul>
     </div>
 
