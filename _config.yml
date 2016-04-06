@@ -33,5 +33,5 @@ defaults:
       type: posts
     values:
       layout: post
-      categories: code
+      category: code
       comments: true

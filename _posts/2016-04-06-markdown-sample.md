@@ -1,6 +1,6 @@
 ---
 title: Hello World!
-categories: Meta
+category: Meta
 ---
 
 Hello World!
