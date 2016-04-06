@@ -19,7 +19,7 @@ layout: default
         </span>
 
         <ul class="stats">
-            <li><a href="#" class="icon fa-comment">0</a></li>
+            <li><a href="{{site.url}}{{page.url}}#disqus_thread" class="icon fa-comment">0</a></li>
             <li><a href="#" class="icon fa-heart">0</a></li>
         </ul>
     </div>
@@ -28,7 +28,7 @@ layout: default
         {{ content }}
     </div>
 
-  
+
 </article>
 
 {% include disqus.html %}
