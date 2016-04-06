@@ -4,4 +4,9 @@ title: About
 permalink: /about/
 ---
 
-Python enthusiast.
+About
+===
+
+Python enthusiast/オタク（仮）.
+
+Always want to see various possibilities of the world.
