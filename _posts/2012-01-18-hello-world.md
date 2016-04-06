@@ -1,7 +1,5 @@
 ---
-layout: post
 title: 'Hello World!'
-categories: Meta
 ---
 
 Hello World!

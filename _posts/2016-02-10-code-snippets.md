@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Code Snippets
-categories: Design
 ---
 
 Whenever you need to post a code snippet, use the liquid tags `highlight` and `endhighlight` like this:

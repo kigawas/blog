@@ -24,3 +24,14 @@ paginate: 4
 # sass
 sass:
   sass_dir: assets/sass
+
+#default
+defaults:
+  -
+    scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      categories: code
+      comments: true
