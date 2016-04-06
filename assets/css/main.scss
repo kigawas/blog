@@ -29,3 +29,14 @@ pre {
 		overflow-x: auto;
 	}
 }
+
+ol, ul{
+  padding-left: 2em;
+}
+
+ol{
+  list-style-type: decimal;
+}
+ul{
+  list-style: katakana-iroha;
+}
