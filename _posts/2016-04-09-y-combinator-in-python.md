@@ -32,9 +32,9 @@ fac = lambda f: lambda n: 1 if n == 1 else n * f(n - 1)
 print(Y(fac)(5))
 ```
 
-得到一个错误`RuntimeError: maximum recursion depth exceeded`，原因是Python的函数传参数的方式是call-by-value的（又叫eager evaluation）,导致了无限递归。
+得到一个错误`RuntimeError: maximum recursion depth exceeded`，原因是Python的函数传参数的方式是call-by-value的（又叫eager evaluation或者正则序）,导致了无限递归。
 
-> eager evaluation是对像这样的函数调用`(lambda y:(lambda x:x)(y))(1)`，先算内部的表达式变成`(lambda y:y)(1)`。 lazy evaluation相反（和call-by-value相对，叫call-by-name），先算外部的表达式，得到`(lambda x:x)(1)`
+> eager evaluation是对像这样的函数调用`(lambda y:(lambda x:x)(y))(1)`，先算内部的表达式变成`(lambda y:y)(1)`。 lazy evaluation相反（和call-by-value相对，叫call-by-name或者应用序），先算外部的表达式，得到`(lambda x:x)(1)`
 
 如果要让Python的某个lambda表达式不立即求值，我们可以用函数包裹起来，例如：
 
