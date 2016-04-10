@@ -34,7 +34,8 @@ print(Y(fac)(5))
 
 得到一个错误`RuntimeError: maximum recursion depth exceeded`，原因是Python的函数传参数的方式是call-by-value的（又叫eager evaluation或者应用序）,导致了无限递归。
 
-> eager evaluation是对像这样的函数调用`(lambda y:(lambda x:x)(y))(1)`，先算内部的表达式变成`(lambda y:y)(1)`。 lazy evaluation相反（和call-by-value相对，叫call-by-name或者正则序），先算外部的表达式，得到`(lambda x:x)(1)`
+> eager evaluation是对像这样的函数调用`(lambda y:(lambda x:x)(y))(1)`，先算内部的表达式变成`(lambda y:y)(1)`。
+> lazy evaluation相反（和call-by-value相对，叫call-by-name或者正则序），先算外部的表达式，得到`(lambda x:x)(1)`。
 
 如果要让Python的某个lambda表达式不立即求值，我们可以用函数包裹起来，例如：
 
@@ -51,7 +52,7 @@ Y = lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args)))
 print(Y(fac)(5))  #120
 ```
 
-注意，通过把x(x)藏到lambda表达式内部，在参数没有传进来之前，x(x)不会被求值。这样，我们就避免了无限递归。
+注意，通过把x(x)藏到lambda表达式内部，在参数传进来之前，x(x)不会被求值。这样，我们就避免了无限递归。
 
 在lambda演算里面，上面的Y和fac都是不必要（严格来说，是不允许出现）的，我们可以得到最终版：
 
