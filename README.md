@@ -8,7 +8,7 @@ The theme is made based on the awesome template designed by [HTML5UP](http://htm
 
 Just fork, delete all the posts in `_posts` and update your site information in `_config.yml`, and you may also edit `About.md` to add your own information and `CNAME` to link to your own domain.
 
-Also, choose another logo by substitute `favicon.ico`.
+Also, choose another logo by substituting your own `favicon.ico` for the old one.
 
 If you want to customize CSS, edit `/assets/css/main.scss`.
 
