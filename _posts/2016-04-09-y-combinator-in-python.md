@@ -3,9 +3,9 @@ title: Y-combinator Python实现
 excerpt: 用Python实现Y-combinator
 ---
 
-[Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus)的lambda演算表示：`Y := λf.(λx.(f (x x)) λx.(f (x x)))`如何用Python实现？
+函数式编程里面，著名的[Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus)的lambda calculus表示是`Y := λf.(λx.(f (x x)) λx.(f (x x)))`。通过使用Y-combinator，我们可以在**不定义函数**的情况下实现递归。本文将介绍如何以Python实现这个看上去有点复杂的lambda表达式。
 
-首先看最外面，lambda表达式接收一个参数f，返回`λx.(f (x x))`调用（准确的术语是应用，以下不作区分）`λx.(f (x x))`的结果。
+首先看最外面，lambda表达式接收一个参数f，返回`λx.(f (x x))`调用[^1]`λx.(f (x x))`的结果。
 
 对于第一部分，lambda表达式接受一个参数x，返回f调用x(x)的结果：
 
@@ -32,11 +32,11 @@ fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 print(Y(fac)(5))
 ```
 
-得到一个错误`RuntimeError: maximum recursion depth exceeded`，原因是Python的函数传参数的方式是call-by-value的（又叫eager evaluation或者应用序）,导致了无限递归。
+得到一个错误`RuntimeError: maximum recursion depth exceeded`，原因是Python的函数传参数的方式是call-by-value[^2]的，导致了无限递归。
 
-> eager evaluation是对像这样的函数调用`(lambda y:(lambda x:x)(y))(1)`，先算内部的表达式变成`(lambda y:y)(1)`。 lazy evaluation相反（和call-by-value相对，叫call-by-name或者正则序），先算外部的表达式，得到`(lambda x:x)(1)`。
+> call-by-value是对像这样的函数调用`(lambda y:(lambda x:x)(y))(1)`，先计算参数变成`(lambda x:x)(1)`。call-by-name[^3]则是先展开内部的表达式，得到`(lambda y:y)(1)`。
 
-如果要让Python的某个lambda表达式不立即求值，我们可以用函数包裹起来，例如：
+如果要让Python的某个lambda表达式**不立即求值**，我们可以用函数包裹起来，例如：
 
 ```python
 another_x = lambda :x
@@ -73,3 +73,10 @@ Y = lambda f: f(Y(f)) # 根据定义
 Y = lambda f: lambda *args: f(Y(f))(*args) # 进行eta变换，以避免无限递归
 print(Y(lambda f: lambda n: 1 if n <= 1 else n * f(n - 1))(5)) # 120
 ```
+
+[^1]: 准确的术语是应用（apply）
+
+[^2]: 又叫eager evaluation或者应用序
+
+[^3]: 又叫lazy evaluation或者正则序
+
