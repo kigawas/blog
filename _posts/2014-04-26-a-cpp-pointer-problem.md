@@ -49,4 +49,4 @@ int main()
 注意：
 在C/C++中，形如`a[1]`访问数组元素的syntax是一个[语法糖][]，其含义是`*( a + 1 )`，如果将`a[1]`换成`1[a]`也是等价的。
 
-[语法糖]:http://zh.wikipedia.org/wiki/%E8%AF%AD%E6%B3%95%E7%B3%96
+[语法糖]:https://zh.wikipedia.org/wiki/%E8%AF%AD%E6%B3%95%E7%B3%96
