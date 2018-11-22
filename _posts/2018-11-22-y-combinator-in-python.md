@@ -107,7 +107,7 @@ As mentioned above, Python will calculate argument first, so it will become `(la
 
 But there is another way. So how about we call the inner function first? Let's keep the 1 outside: `(lambda y: (lambda y: y)())(1)` then `(lambda y: y)(1)`.
 
-By this way, we simplify the function before we actually do any calculation. In fact, some functional languages is doing like this.
+By this way, we simplify the function before we actually do any calculation. In fact, some functional languages do like this.
 
 ### The way to delay evaluation
 
