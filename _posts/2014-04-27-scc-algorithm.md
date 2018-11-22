@@ -3,9 +3,7 @@ title: 有向图强连通分量的算法
 excerpt: 有向图强连通分量的算法简介和代码（CPP）
 ---
 
-
 ## 强连通分量的概念
-
 
 在有向图G中，如果两个顶点间至少存在一条路径，称两个顶点**强连通(strongly connected)**。如果有向图G的每两个顶点都强连通，称G是一个**强连通图**。非强连通图有向图的极大强连通子图，称为**强连通分量(strongly connected components)**。
 
@@ -17,11 +15,11 @@ excerpt: 有向图强连通分量的算法简介和代码（CPP）
 
 Kosaraju算法的步骤：
 
-1. 先找图G的拓扑序列。
+1.  先找图G的拓扑序列。
 
-2. 在图G的**逆图**上以拓扑序列的顺序，对每一个点运行DFS。添加一个辅助数组id[ ]，每一次的DFS对应同样的id。
+2.  在图G的**逆图**上以拓扑序列的顺序，对每一个点运行DFS。添加一个辅助数组id[ ]，每一次的DFS对应同样的id。
 
-3. 有同样id的点即为连通分量。
+3.  有同样id的点即为连通分量。
 
 Kosaraju算法的原理：
 
@@ -33,7 +31,7 @@ Kosaraju算法的原理：
 
 代码：
 
-- 拓扑序列:
+-   拓扑序列:
 
 ```cpp
 void dfs( DiGraph &G, int v ) {
@@ -47,7 +45,7 @@ void dfs( DiGraph &G, int v ) {
 }
 ```
 
-- Kosaraju:
+-   Kosaraju:
 
 ```cpp
 Kosaraju( DiGraph &G ){
