@@ -1,19 +1,19 @@
 ---
 title: Y-combinator in Python
-excerpt: How to implement Y-combinator in Python
+excerpt: A simple introdution to Y-combinator in Python
 ---
 
 ## What is Y-combinator
 
-In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in lambda calculus like `Y := λf.(λx.(f (x x)) λx.(f (x x)))`. Y-combinator can enable us to implement recursion **without defining functions** explicitly. In this article, we'll discuss how to implement it in Python.
+In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in lambda calculus like `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. Y-combinator can enable us to implement recursion **without defining functions** explicitly. In this article, we'll discuss how to implement it in Python.
 
 ## How to implement Y-combinator
 
-Let's break down it into small pieces.
+Let's break it into small pieces.
 
-First, let's have a look on the outer side. It's actullay accepting an argument `f` and return the function `λx.(f (x x))` invoking[^1] with the argument `λx.(f (x x))`'s result.
+First, we take a look on the outer side. It's actullay accepting an argument `f` and return the function `lambda x.(f (x x))` invoking (or "applying" as a FP jargon) with the argument `lambda x.(f (x x))`'s result.
 
-### Inner side: `λx.(f (x x))`
+### Inside lambda
 
 If you have Lisp experience, you may be familiar with something like `(f (x x))`. It is also called "[S-expression](https://www.wikiwand.com/en/S-expression)". For something like `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, ane the `a` can be another S-expression like `(x x)`.
 
@@ -23,13 +23,13 @@ So in python, it's simple:
 lambda x: f(x(x))
 ```
 
-And the latter `λx.(f (x x))` is definitely the same:
+And the latter `lambda x.(f (x x))` is definitely the same:
 
 ```python
 lambda x: f(x(x))
 ```
 
-### Outer side
+### Outside lambda
 
 So, how do we put them together? Actually, `lambda x: f(x(x))` returns a function, so we'll call this function whose argument is itself. I know it sounds strange, but for now we just do it:
 
@@ -38,7 +38,7 @@ So, how do we put them together? Actually, `lambda x: f(x(x))` returns a functio
 #     function                argument
 ```
 
-And back to outer side, we'll get
+And back to outside, we'll get
 
 ```python
 Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
@@ -46,7 +46,7 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
 
 ## How to use Y-combinator
 
-You may want to ask, how should we use this strange thing to implement recursion without defining function? Let's start from the factorial calculation.
+You may want to ask, how should we use this weird thing to implement recursions without defining any function? Let's start from the factorial calculation.
 
 ### First trying
 
@@ -154,5 +154,3 @@ Y = lambda f: f(Y(f))  # By definition
 Z = lambda f: lambda *args: f(Z(f))(*args)  # eta converted
 print(Z(lambda f: lambda n: 1 if n <= 1 else n * f(n - 1))(5))  # 120
 ```
-
-[^1]&#x3A; Sometimes it is called "apply" as a function programming jargon
