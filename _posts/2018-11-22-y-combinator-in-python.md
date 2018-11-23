@@ -15,9 +15,9 @@ First, we take a look on the outer side. It's actullay accepting an argument `f`
 
 ### Inside lambda
 
-If you have Lisp experience, you may be familiar with something like `(f (x x))`. It is also called "[S-expression](https://www.wikiwand.com/en/S-expression)". For something like `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, ane the `a` can be another S-expression like `(x x)`.
+If you have Lisp experience, you may be familiar with something like `(f (x x))`. It is also called "[S-expression](https://www.wikiwand.com/en/S-expression)". For something like `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
 
-So in python, it's simple:
+So in Python, it's quite straight:
 
 ```python
 lambda x: f(x(x))
