@@ -1,19 +1,19 @@
 ---
 title: Y-combinator in Python
-excerpt: A simple introdution to Y-combinator in Python
+excerpt: A simple introduction to Y-combinator in Python
 ---
 
 ## What is Y-combinator
 
-In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in lambda calculus like `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. Y-combinator can enable us to implement recursion **without defining functions** explicitly. In this article, we'll discuss how to implement it in Python.
+In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in lambda calculus format: `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. Y-combinator enables us to implement recursion **without defining functions explicitly**. In this article, we'll discuss how to implement it in Python. For simplicity, the calculus format can be split into two parts: inner/outer lambda.
 
 ## How to implement Y-combinator
 
 Let's break it into small pieces.
 
-First, we take a look on the outer side. It's actullay accepting an argument `f` and return the function `lambda x.(f (x x))` invoking (or "applying" as a FP jargon) with the argument `lambda x.(f (x x))`'s result.
+First, we take a look on the outer side. It's actually accepting an argument `f` and return the function `lambda x.(f (x x))` invoking (or "applying" as a FP jargon) with the argument `lambda x.(f (x x))`'s result.
 
-### Inside lambda
+### Inner lambda
 
 If you have Lisp experience, you may be familiar with something like `(f (x x))`. It is also called "[S-expression](https://www.wikiwand.com/en/S-expression)". For something like `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
 
@@ -29,7 +29,7 @@ And the latter `lambda x.(f (x x))` is definitely the same:
 lambda x: f(x(x))
 ```
 
-### Outside lambda
+### Outer lambda
 
 So, how do we put them together? Actually, `lambda x: f(x(x))` returns a function, so we'll call this function whose argument is itself. I know it sounds strange, but for now we just do it:
 
