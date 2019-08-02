@@ -13,7 +13,7 @@ description: >
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://kigawas.me" # the base hostname & protocol for your site
 twitter_username: kigawas
-github_username:  kigawas
+github_username: kigawas
 permalink: pretty
 
 # Build settings
@@ -21,8 +21,8 @@ markdown: kramdown
 
 # paginate
 plugins:
- - jekyll-paginate
- - jekyll-feed
+  - jekyll-paginate
+  - jekyll-feed
 paginate_path: "/page/:num/"
 paginate: 4
 
@@ -32,8 +32,7 @@ sass:
 
 # default
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: posts
     values:
