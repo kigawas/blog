@@ -116,7 +116,7 @@ By this way, we simplify the function before we actually do any calculation. In 
 So if we want to delay the evaluation of an argument, what should we do? Say we don't want it to calculate `3+3` right now, we can wrap them into a function:
 
 ```python
-another_f = lambda : 3 + 3
+another_f = lambda: 3 + 3
 ```
 
 And the `3+3` will only be evaluated when we call it like `another_f()`.
