@@ -7,13 +7,11 @@ excerpt: A simple introduction to Y-combinator in Python
 
 In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in the lambda calculus format: `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. With Y-combinator, we can implement recursion **without defining functions explicitly**. In this article, we'll discuss how to do it in Python.
 
-For simplicity, the calculus format can be split into two parts: inner/outer lambda.
-
 ## How to implement Y-combinator
 
-Let's break it into small pieces.
+Let's break it into small pieces. For simplicity, the calculus format of the Y-combinator can be split into two parts: inner/outer lambda.
 
-First, we take a look on the outer side. It's actually accepting an argument `f` and return the function `lambda x.(f (x x))` invoking (or "applying" as a FP jargon) with the argument `lambda x.(f (x x))`'s result.
+First, let's have a look at the outer side. It's actually accepting an argument `f` and return the function `lambda x.(f (x x))` invoking (or "applying" as a FP jargon) with the argument `lambda x.(f (x x))`'s result.
 
 ### Inner lambda
 
@@ -50,7 +48,7 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
 
 You may want to ask, how should we use this weird thing to implement recursions __without__ defining any function? Well, let's start from the factorial calculation.
 
-### First trying
+### First try
 
 In normal way, you might write something like:
 
@@ -75,7 +73,7 @@ And then, we apply Y-combinator:
 print(Y(fac)(5))
 ```
 
-And we get:
+And:
 
 ```python
 RecursionError: maximum recursion depth exceeded
@@ -109,7 +107,7 @@ As mentioned above, Python will calculate arguments first, so it will become `(l
 
 But there is another way. So how about we call the inner function first? Let's keep the 1 outside: `(lambda y: (lambda y: y)())(1)` then `(lambda y: y)(1)`.
 
-By this way, we simplify the function before we actually do any calculation. In fact, some functional languages behave this way.
+By this way, we simplify the function before we actually do any calculation. In fact, some typical functional languages behave in this way.
 
 ### The way to delay evaluation
 
@@ -119,7 +117,7 @@ So if we want to delay the evaluation of an argument, what should we do? Say we 
 another_f = lambda: 3 + 3
 ```
 
-And the `3+3` will only be evaluated when we call it like `another_f()`.
+And the `3+3` will only be evaluated when we call it as `another_f()`.
 
 > It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus.
 
