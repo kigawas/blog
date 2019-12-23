@@ -63,13 +63,13 @@ print(fac(5))  # 120
 
 But what if you cannot define or name a function? In lambda calculus, we cannot define variable or name a function as usual. And then here comes Y-combinator.
 
-First, let's convert the factorial function into lambda:
+First, let's convert the factorial function into lambda by adding an outside argument:
 
 ```python
 fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 ```
 
-And then, we use Y-combinator:
+And then, we apply Y-combinator:
 
 ```python
 print(Y(fac)(5))
@@ -83,9 +83,9 @@ RecursionError: maximum recursion depth exceeded
 
 ### The evaluation problem we get
 
-Wait, what is this? I'm sorry I forgot to mention this. This has something to do with the way how we calculate arguments when passing them into the function.
+Wait, what is this? I'm sorry I forgot to mention this. It has something to do with the way how we calculate arguments passed into a function.
 
-Let's say you call function like:
+Let's say you have functions like:
 
 ```python
 def add1(x):
@@ -97,23 +97,23 @@ def mul(x, y):
 print(mul(add1(0), add1(1))) # 2
 ```
 
-Let's think about: When Python is calling `mul()`, how does python calculate it's arguments? Some of you may raise your hand: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`.
+Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does python calculate it's arguments? Some of you may raise your hand: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`.
 
-Yes, that's almost right. Let's think a little deeper. What if we call function like:
+Yes, that's almost right. Let's dig something else. What if we call a function like:
 
 ```python
 (lambda y: (lambda x: x)(y))(1)
 ```
 
-As mentioned above, Python will calculate argument first, so it will become `(lambda 1: (lambda x: x)(1)`, then `(lambda x: x)(1)`.
+As mentioned above, Python will calculate arguments first, so it will become `(lambda 1: (lambda x: x)(1)`, then `(lambda x: x)(1)`.
 
 But there is another way. So how about we call the inner function first? Let's keep the 1 outside: `(lambda y: (lambda y: y)())(1)` then `(lambda y: y)(1)`.
 
-By this way, we simplify the function before we actually do any calculation. In fact, some functional languages do like this.
+By this way, we simplify the function before we actually do any calculation. In fact, some functional languages behave this way.
 
 ### The way to delay evaluation
 
-So if we want to delay the evaluation of an argument, what should we do? Say we don't want it to calculate `3+3` right now, we can put them into a function:
+So if we want to delay the evaluation of an argument, what should we do? Say we don't want it to calculate `3+3` right now, we can wrap them into a function:
 
 ```python
 another_f = lambda : 3 + 3
@@ -121,18 +121,18 @@ another_f = lambda : 3 + 3
 
 And the `3+3` will only be evaluated when we call it like `another_f()`.
 
-> It is called "[eta conversion](https://www.wikiwand.com/en/Lambda_calculus#/%CE%B7-conversion)" in lambda calculus.
+> It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus.
 
 ### Z-Combinator
 
-Back to the Y-combinator we wrote, the problem happened when Python evaluate our argument too early, so we need to delay the argument to the latter lambda inside:
+Back to the Y-combinator we wrote, the problem comes when Python is evaluating our arguments too early, so we need to delay the calculation of `x(x)` in the argument lambda:
 
 ```python
 Y = lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args)))
 print(Y(fac)(5))  # 120
 ```
 
-By this way, until the argument is passed into the latter lambda, `x(x)` will not be evaluated.
+By this way, `x(x)` will not be evaluated util `5` passed into it.
 
 > Eta-converted Y-combinator is called Z-combinator。
 
@@ -147,9 +147,11 @@ print(
   (lambda f: lambda n: 1 if n <= 1 else n * f(n - 1))(5))  # 120
 ```
 
+This is very neat!
+
 ### A simpler version
 
-However, if we are not that strict, we can define Y-combinator in a simpler way like:
+However, if we are not that strict, we can define Y-combinator in a simpler way with recursion like:
 
 ```python
 Y = lambda f: f(Y(f))  # By definition
