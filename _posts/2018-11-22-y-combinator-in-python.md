@@ -5,7 +5,9 @@ excerpt: A simple introduction to Y-combinator in Python
 
 ## What is Y-combinator
 
-In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in lambda calculus format: `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. Y-combinator enables us to implement recursion **without defining functions explicitly**. In this article, we'll discuss how to implement it in Python. For simplicity, the calculus format can be split into two parts: inner/outer lambda.
+In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in the lambda calculus format: `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. With Y-combinator, we can implement recursion **without defining functions explicitly**. In this article, we'll discuss how to do it in Python.
+
+For simplicity, the calculus format can be split into two parts: inner/outer lambda.
 
 ## How to implement Y-combinator
 
@@ -15,7 +17,7 @@ First, we take a look on the outer side. It's actually accepting an argument `f`
 
 ### Inner lambda
 
-If you have Lisp experience, you may be familiar with something like `(f (x x))`. It is also called "[S-expression](https://www.wikiwand.com/en/S-expression)". For something like `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
+If you have Lisp experience, you may be familiar with something like `(f (x x))`, which is also called "[S-expression](https://en.wikipedia.org/wiki/S-expression)". For `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
 
 So in Python, it's quite straight:
 
@@ -46,11 +48,11 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
 
 ## How to use Y-combinator
 
-You may want to ask, how should we use this weird thing to implement recursions without defining any function? Let's start from the factorial calculation.
+You may want to ask, how should we use this weird thing to implement recursions __without__ defining any function? Well, let's start from the factorial calculation.
 
 ### First trying
 
-In normal way, you will write it like:
+In normal way, you might write something like:
 
 ```python
 def fac(n):
