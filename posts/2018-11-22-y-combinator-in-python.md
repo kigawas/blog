@@ -1,6 +1,7 @@
 ---
-title: Y-combinator in Python
-excerpt: A simple introduction to Y-combinator in Python
+title: "Y-combinator in Python"
+date: 2018-11-22
+draft: false
 ---
 
 ## What is Y-combinator
