@@ -1,12 +1,17 @@
----
-title: "Y-combinator in Python"
-date: 2018-11-22
-draft: false
----
++++
+title = "Y-combinator in Python"
+date = "2018-11-22"
+cover = ""
+tags = ["Python", "functional programming"]
+description = "A brief introduction to Y-combinator in Python"
+showFullContent = false
++++
 
 ## What is Y-combinator
 
-In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in the lambda calculus format: `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. With Y-combinator, we can implement recursion **without defining functions explicitly**. In this article, we'll discuss how to do it in Python.
+In the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed in the lambda calculus format: `Y := lambda f.(lambda x.(f (x x)) lambda x.(f (x x)))`. With Y-combinator, we can implement recursion **without defining functions explicitly**.
+
+In this article, we'll discuss how to do it in Python.
 
 ## How to implement Y-combinator
 

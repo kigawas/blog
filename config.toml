@@ -3,6 +3,7 @@ languageCode = "en-us"
 title = "map(learn, world)"
 theme = "terminal"
 
+disqusShortname = "kigawas-blog"
 [params]
   # dir name of your blog content (default is `content/posts`)
   contentTypeName = "posts"
@@ -57,7 +58,7 @@ theme = "terminal"
     missingBackButtonLabel = "Back to home page"
 
     [languages.en.params.logo]
-      logoText = "Terminal"
+      logoText = "map(learn, world)"
       logoHomeLink = "/"
 
     [languages.en.menu]
