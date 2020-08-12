@@ -21,7 +21,7 @@ First, let's have a look at the outer side. It's actually accepting an argument 
 
 ### Inner lambda
 
-If you have Lisp experience, you may be familiar with something like `(f (x x))`, which is also called "[S-expression](https://en.wikipedia.org/wiki/S-expression)". For `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
+If you have some Lisp experience, you may be familiar with something like `(f (x x))`, which is also called "[S-expression](https://en.wikipedia.org/wiki/S-expression)". For `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
 
 So in Python, it's quite straight:
 
@@ -101,7 +101,7 @@ def mul(x, y):
 print(mul(add1(0), add1(1))) # 2
 ```
 
-Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does python calculate it's arguments? Some of you may raise your hand: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`.
+Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python calculate it's arguments? Some of you may raise your hand: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`.
 
 Yes, that's almost right. Let's dig something else. What if we call a function like:
 
@@ -109,11 +109,11 @@ Yes, that's almost right. Let's dig something else. What if we call a function l
 (lambda y: (lambda x: x)(y))(1)
 ```
 
-As mentioned above, Python will calculate arguments first, so it will become `(lambda 1: (lambda x: x)(1)`, then `(lambda x: x)(1)`.
+As mentioned above, Python will calculate outer arguments first, so it will become `(lambda 1: (lambda x: x)(1)`, then `(lambda x: x)(1)`.
 
-But there is another way. So how about we call the inner function first? Let's keep the 1 outside: `(lambda y: (lambda y: y)())(1)` then `(lambda y: y)(1)`.
+But there is another way. So how about we get the inner calculated first? Let's keep the 1 outside: `(lambda y: (lambda y: y)())(1)` then `(lambda y: y)(1)`.
 
-By this way, we simplify the function before we actually do any calculation. In fact, some typical functional languages behave in this way.
+By this way, we simplified the function before any calculation was done. In fact, some typical functional languages behave in this way.
 
 ### The way to delay evaluation
 
@@ -129,14 +129,14 @@ And the `3+3` will only be evaluated when we call it as `another_f()`.
 
 ### Z-Combinator
 
-Back to the Y-combinator we wrote, the problem comes when Python is evaluating our arguments too early, so we need to delay the calculation of `x(x)` in the argument lambda:
+Back to the Y-combinator we wrote, the problem comes when Python evaluates our arguments too early, so we need to delay the calculation of `x(x)` in the argument lambda:
 
 ```python
 Y = lambda f: (lambda x: x(x))(lambda x: f(lambda *args: x(x)(*args)))
 print(Y(fac)(5))  # 120
 ```
 
-By this way, `x(x)` will not be evaluated util `5` passed into it.
+By this way, the inner `x(x)` will not be evaluated util `5` passed into it.
 
 > Eta-converted Y-combinator is called Z-combinator。
 
