@@ -102,7 +102,7 @@ RecursionError: maximum recursion depth exceeded
 
 ### The evaluation problem we saw
 
-Wait, what is this? I'm sorry I forgot to mention this. It has something to do with the way how a programming language calculates arguments passed into a function.
+Wait, what is this? I'm sorry I forgot to mention this. It has something to do with the way how a programming language evaluates arguments passed into a function.
 
 Let's say you have functions like:
 
@@ -116,7 +116,7 @@ def mul(x, y):
 print(mul(add1(0), add1(1))) # 2
 ```
 
-Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python calculate its arguments? Some of you may answer quickly: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`!
+Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python evaluate its arguments? Some of you may answer quickly: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`!
 
 Yes, that's __almost__ right. Let's dig into something else. What if we call a function like:
 
