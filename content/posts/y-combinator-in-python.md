@@ -22,7 +22,7 @@ showFullContent = false
 
 In terms of the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed on the lambda calculus format: `λf. (λx. (f (x x))) (λx. (f (x x)))`.
 
-With Y-combinator, we can implement recursion **without defining functions explicitly**. And as you may know, recursion is equivalent to iteration, thus we can assure that lambda calculus is as powerful as Python (lambda calculus is Turing-complete per se), even it only has three rules compared to some sophisticated languages.
+With Y-combinator, we can implement recursion **without defining functions explicitly**. As you may know, recursion is equivalent to iteration, thus we can assure that lambda calculus is as powerful as Python (lambda calculus is Turing-complete per se), even it only has three rules compared to some sophisticated languages.
 
 In this article, we'll discuss how to do it in Python.
 
@@ -34,7 +34,7 @@ First, let's have a look at the outer side. It's actually accepting an argument 
 
 ### Inner lambda
 
-If you have some Lisp experience, you may be familiar with something like `(f (x x))`, which is also called "[S-expression](https://en.wikipedia.org/wiki/S-expression)". For `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
+If you have some experience of Lisp-family languages, you may be familiar with something like `(f (x x))`, which is also called "[S-expression](https://en.wikipedia.org/wiki/S-expression)". For `(f a)`, it means that we are calling a function `f`, and it takes an argument `a`, and the `a` can also be another S-expression like `(x x)`.
 
 So in Python, it's quite straight:
 
@@ -42,7 +42,7 @@ So in Python, it's quite straight:
 lambda x: f(x(x))
 ```
 
-And the latter `λx. (f (x x))` is definitely the same:
+The latter `λx. (f (x x))` is definitely the same:
 
 ```python
 lambda x: f(x(x))
@@ -57,7 +57,7 @@ So, how do we put them together? Actually, `lambda x: f(x(x))` is a function, so
 #     function                argument
 ```
 
-And back to outside, we'll get
+Back to outside, we'll get
 
 ```python
 Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
@@ -78,7 +78,7 @@ def fac(n):
 print(fac(5))  # 120
 ```
 
-But what if you cannot name a function? In lambda calculus, we cannot name a function as usual. And then here comes Y-combinator.
+However, what if you cannot name a function? In lambda calculus, we cannot name a function as usual. Then here comes Y-combinator.
 
 First, let's convert the factorial function into lambda by adding an outside argument:
 
@@ -86,15 +86,15 @@ First, let's convert the factorial function into lambda by adding an outside arg
 fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 ```
 
-> Just need to substitue the function name with an argument.
+> Just need to substitute the function name with an argument.
 
-And then, we apply Y-combinator to it:
+Then, we apply Y-combinator to it:
 
 ```python
 print(Y(fac)(5))
 ```
 
-And:
+Hmm...You should see:
 
 ```python
 RecursionError: maximum recursion depth exceeded
@@ -116,14 +116,14 @@ def mul(x, y):
 print(mul(add1(0), add1(1))) # 2
 ```
 
-Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python calculate it's arguments? Some of you may answer quickly: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`!
+Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python calculate its arguments? Some of you may answer quickly: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`!
 
 Yes, that's __almost__ right. Let's dig into something else. What if we call a function like:
 
 ```python
 (lambda y: (lambda x: x)(y))(1)
 ```
-Obviously you'll see `1`, but in what order Python evalulates its arguments?
+Obviously you'll see `1`, but in what order Python evaluates its arguments?
 
 As mentioned above, Python will evaluate arguments eagerly, so it will become  `(lambda y: y)(1)`, then `1`.
 
@@ -144,11 +144,11 @@ This is why we got `RecursionError`. Let's review the `lambda f: (lambda x: f(x(
 i((lambda y: i(y(y)))(lambda y: i(y(i(y(i(y(...))))))))
 ```
 
-Here when Python evaluates the argument `lambda y: i(y(y)`, it'll recusively call `y` as a function over and over again. But how can we stop the recursion? Or how can we only recursively call it once or twice or thrice?
+Here when Python evaluates the argument `lambda y: i(y(y)`, it'll recursively call `y` as a function over and over again. Yet, how can we stop the recursion? Or how can we only recursively get it called just once or twice or thrice?
 
-There is an answer.  But before explain that, let's get back to the simple function call `(lambda y: (lambda x: x)(y))(1)`. How about to delay the inner function's evaluation:  `(lambda x: x)(1)`?
+There is an answer. But before explain that, let's get back to the simple function call `(lambda y: (lambda x: x)(y))(1)`. How about to delay the inner function's evaluation:  `(lambda x: x)(1)`?
 
-By this way, we evaluated the function before any arguments get substitued. In fact, some typical functional languages behave in this way, however unfortunately, Python doesn't follow this style.
+By this way, we evaluated the function before any arguments get substituted. In fact, some typical functional languages behave in this way, however unfortunately, Python doesn't follow this style.
 
 ### The way to delay evaluation
 
@@ -158,7 +158,7 @@ So if we want to delay the evaluation of an argument, what should we do? Say we 
 another_f = lambda: 3 + 3
 ```
 
-And the `3+3` will only be evaluated when the function gets invoked as `another_f()`.
+Thus, the `3+3` will only be evaluated when the function gets invoked as `another_f()`.
 
 > It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus.
 > Eta-converted Y-combinator is called Z-combinator。
@@ -187,7 +187,7 @@ fac(fac(lambda *args: fy1(fy1)(*args)))
 fac(lambda n: 1 if n <= 1 else n * (lambda *args: fy1(fy1)(*args))(n - 1))
 ```
 
-And if you call `fy(fy)` or `fy(fy1)`, it'll not get trapped into endless recursion since inside `fy`, `y` will not be invoked immediately. Instead, it'll just return the closure `lambda *args: y(y)(*args)`. Let's continue:
+And if you call `fy(fy)` or `fy(fy1)`, it'll not get trapped into endless recursion since inside `fy`, the `y` will not be invoked immediately. Instead, it'll just return the closure `lambda *args: y(y)(*args)`. Let's continue:
 
 ```python
 # eliminate *args
@@ -215,7 +215,7 @@ zetafy1 = lambda *args: fy1(fy1)(*args)
 
 The complicated part disappeared like magic!
 
-### Final version without variables
+### The final version without variables
 
 Remember we cannot define variables in lambda calculus? So we just remove the variable name and get the final version:
 
@@ -253,4 +253,4 @@ print(
 
 ## Conclusion
 
-Lambda calculus is concise but it's profoundly connected with the essence of what calculation is. With Y-combinator, we are able to implement recursion as in Python without defining any variable and even [emulate a script language virtual machine](https://github.com/kigawas/computation-py/blob/master/computation/tests/interpreter/test_interpreter.py#L39).
+Lambda calculus is concise, but it's profoundly connected with the essence of what calculation is. With Y-combinator, we are able to implement recursion as in Python without defining any variable and even [emulate a script language virtual machine](https://github.com/kigawas/computation-py/blob/master/computation/tests/interpreter/test_interpreter.py#L39).
