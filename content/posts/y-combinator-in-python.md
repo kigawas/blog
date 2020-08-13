@@ -50,14 +50,14 @@ lambda x: f(x(x))
 
 ### Outer lambda
 
-So, how do we put them together? Actually, `lambda x: f(x(x))` is a function, so we'll invoke this function whose argument is itself. I know it sounds strange, but for now we just try it:
+So, how do we put them together? Actually, `lambda x: f(x(x))` is a function, so we'll invoke this function whose argument is itself. I know it sounds cryptic, but for now we just try:
 
 ```python
 ( lambda x: f(x(x)) )  ( lambda x: f(x(x)) )
 #     function                argument
 ```
 
-Back to outside, we'll get
+Back to the outside, we'll get
 
 ```python
 Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
@@ -65,7 +65,7 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
 
 ## How to use Y-combinator
 
-You may want to ask, how should we use this weird thing to implement recursions __without__ defining any function? Well, let's start from the factorial calculation.
+You may want to ask, how should we use this weird thing to implement recursions __without__ defining any function? Well, let's take the factorial calculation as an example.
 
 ### First try
 
@@ -102,7 +102,7 @@ RecursionError: maximum recursion depth exceeded
 
 ### The evaluation problem we saw
 
-Wait, what is this? I'm sorry I forgot to mention this. It has something to do with the way how a programming language evaluates arguments passed into a function.
+Wait, what is this? I'm sorry I forgot to mention the error. It has something to do with the way how a programming language evaluates arguments passed into a function.
 
 Let's say you have functions like:
 
