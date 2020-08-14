@@ -257,4 +257,4 @@ You'll get the same result. If you'd like to know why, evaluate it step by step.
 
 ## Conclusion
 
-Lambda calculus is concise, but it's profoundly connected with the essence of what calculation is. With Y-combinator, we are able to implement recursion as in Python without defining any variable and even [emulate a script language virtual machine](https://github.com/kigawas/computation-py/blob/master/computation/tests/interpreter/test_interpreter.py#L39).
+Lambda calculus is concise, but it's profoundly connected with the essence of calculation. With Y-combinator, we are able to implement recursion as in Python without defining any variable and even [emulate a script language virtual machine](https://github.com/kigawas/computation-py/blob/master/computation/tests/interpreter/test_interpreter.py#L39).
