@@ -141,7 +141,7 @@ i((lambda y: i(y(y)))(lambda y: i(y(i(y(i(y(...))))))))
 
 Here when Python evaluates the argument `lambda y: i(y(y)`, it'll recursively call `y` as a function over and over again. Yet, how can we cease the endless recursion? Or how can we only recursively get it called just once or twice or thrice?
 
-In effect, we'd like to evaluate the function itself __before__ any arguments get substituted. 
+In effect, we'd like to evaluate the function itself __before__ any arguments get substituted.
 
 > This is called normal order.
 
@@ -219,7 +219,7 @@ The complicated part `zetafy1(n - 1)` disappeared like magic!
 
 ### The final version without variables
 
-Remember we cannot define variables in lambda calculus? So we just remove the variable name and reach the final version:
+Remember we cannot define variables in lambda calculus? So we just remove variables and reach the final version:
 
 ```python
 print(
