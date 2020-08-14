@@ -139,7 +139,7 @@ This is why we got `RecursionError`. Let's review the `lambda f: (lambda x: f(x(
 i((lambda y: i(y(y)))(lambda y: i(y(i(y(i(y(...))))))))
 ```
 
-Here when Python evaluates the argument `lambda y: i(y(y)`, it'll recursively call `y` as a function over and over again. Yet, how can we cease the endless recursion? Or how can we only recursively get it called just once or twice or thrice?
+Here when Python evaluates the argument `lambda y: i(y(y))`, it'll recursively call `y` as a function over and over again. Yet, how can we cease the endless recursion? Or how can we only recursively get it called just once or twice or thrice?
 
 In effect, we'd like to evaluate the function itself __before__ any arguments get substituted.
 
