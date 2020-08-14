@@ -2,8 +2,9 @@ baseURL = "/"
 languageCode = "en-us"
 title = "map(learn, world)"
 theme = "terminal"
-
 disqusShortname = "kigawas-blog"
+enableGitInfo = true
+
 [params]
   # dir name of your blog content (default is `content/posts`)
   contentTypeName = "posts"
