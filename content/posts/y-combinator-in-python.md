@@ -8,6 +8,7 @@ showFullContent = false
 +++
 
 ## A brief introduction to lambda calculus
+
 [Lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus) is a language (formal system) to abstract and express calculation itself under only three concise rules.
 
 | Syntax  | Name        | Description                                                     |
@@ -123,6 +124,7 @@ Yes, that's almost right. Let's dig into something else. What if we call a funct
 ```python
 (lambda y: (lambda x: x)(y))(1)
 ```
+
 Obviously you'll see `1`, but in what order Python evaluates its arguments?
 
 As mentioned above, Python will evaluate arguments eagerly, so it will become  `(lambda x: x)(1)`, then `1`.
@@ -162,7 +164,7 @@ Thus, the `3+3` will only be evaluated when the function gets invoked as `anothe
 
 ### Z-Combinator
 
-Back to the Y-combinator we wrote, the problem comes when Python evaluates our arguments too early, so we need to delay the calculation of `x(x)` in the argument lambda:
+Back to the Y-combinator we wrote, the problem comes when Python evaluates our arguments too early, so we need to delay the evaluation of `x(x)` in the argument lambda:
 
 ```python
 Y = lambda f: (lambda x: f(x(x)))(lambda x: f(lambda *args: x(x)(*args)))
@@ -233,6 +235,7 @@ How neat!
 ### Other variants
 
 #### Recursive
+
 However, if we are not that strict, we can define Y-combinator simply with recursion like:
 
 ```python
