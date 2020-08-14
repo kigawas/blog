@@ -20,7 +20,7 @@ showFullContent = false
 
 ## What is Y-combinator
 
-In terms of the functional programming field, the famous [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed on the lambda calculus format: `λf. (λx. (f (x x))) (λx. (f (x x)))`.
+In terms of the functional programming field, [Y-combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator#Fixed_point_combinators_in_lambda_calculus) is expressed on the lambda calculus format: `λf. (λx. (f (x x))) (λx. (f (x x)))`.
 
 With Y-combinator, we can implement recursion **without defining functions explicitly**. As you may know, recursion is equivalent to iteration, thus we can assure that lambda calculus is as powerful as Python (lambda calculus is Turing-complete per se), even it only has three rules compared to some sophisticated languages.
 
@@ -65,7 +65,7 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
 
 ## How to use Y-combinator
 
-You may want to ask, how should we use this weird thing to implement recursions __without__ defining any function? Well, let's take the factorial calculation as an example.
+You may want to ask, how should we use this weird thing to implement recursion __without__ defining any function? Well, let's take the factorial calculation as an example.
 
 ### First try
 
@@ -78,17 +78,17 @@ def fac(n):
 print(fac(5))  # 120
 ```
 
-However, what if you cannot name a function? In lambda calculus, we cannot name a function as usual. Then here comes Y-combinator.
+However, what if you cannot name a function? Let's recap the rules of lambda calculus, we may notice there's no rule for naming or defining a function. So we have to find another way to emulate that.
 
-First, let's convert the factorial function into lambda by adding an outside argument:
+One way is to substitute the recursion call with an argument representing the function:
 
 ```python
 fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 ```
 
-> Just need to substitute the function name with an argument.
+You may wonder how to call it like in Python, in fact, this is why we need Y-combinator.
 
-Then, we apply Y-combinator to it:
+Let's try applying it:
 
 ```python
 print(Y(fac)(5))
@@ -102,9 +102,9 @@ RecursionError: maximum recursion depth exceeded
 
 ### The evaluation problem we saw
 
-Wait, what is this? I'm sorry I forgot to mention the error. It has something to do with the way how a programming language evaluates arguments passed into a function.
+Wait, what is this? I'm sorry I forgot to mention you'd encounter with the error. It has something to do with the way how a programming language evaluates arguments passed into a function.
 
-Let's say you have functions like:
+Say you have functions like:
 
 ```python
 def add1(x):
@@ -116,21 +116,16 @@ def mul(x, y):
 print(mul(add1(0), add1(1))) # 2
 ```
 
-Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python evaluate its arguments? Some of you may answer quickly: it'll calculate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`!
+Let's ponder: When Python is calling `mul(add1(0), add1(1))`, how does Python evaluate its arguments? Some of you may answer quickly: it'll evaluate `add1(0)` and `add1(1)` first, and then `mul(1, 2)`!
 
-Yes, that's __almost__ right. Let's dig into something else. What if we call a function like:
+Yes, that's almost right. Let's dig into something else. What if we call a function like:
 
 ```python
 (lambda y: (lambda x: x)(y))(1)
 ```
 Obviously you'll see `1`, but in what order Python evaluates its arguments?
 
-As mentioned above, Python will evaluate arguments eagerly, so it will become  `(lambda y: y)(1)`, then `1`.
-
-```python
-In [13]: (lambda y: (lambda x: x)(y))
-Out[13]: <function __main__.<lambda>(y)>  # here the argument is y
-```
+As mentioned above, Python will evaluate arguments eagerly, so it will become  `(lambda x: x)(1)`, then `1`.
 
 > This is called applicative order.
 
@@ -139,20 +134,22 @@ This is why we got `RecursionError`. Let's review the `lambda f: (lambda x: f(x(
 ```python
 (lambda f: (lambda x: f(x(x)))(lambda x: f(x(x))))(i)
 # will be evaluated to:
-(lambda x: i(x(x)))(lambda y: i(y(y))) # let's rename
+(lambda x: i(x(x)))(lambda y: i(y(y)))  # let's rename to avoid ambiguity
 # endless recursion:
 i((lambda y: i(y(y)))(lambda y: i(y(i(y(i(y(...))))))))
 ```
 
-Here when Python evaluates the argument `lambda y: i(y(y)`, it'll recursively call `y` as a function over and over again. Yet, how can we stop the recursion? Or how can we only recursively get it called just once or twice or thrice?
+Here when Python evaluates the argument `lambda y: i(y(y)`, it'll recursively call `y` as a function over and over again. Yet, how can we cease the endless recursion? Or how can we only recursively get it called just once or twice or thrice?
 
-There is an answer. But before explain that, let's get back to the simple function call `(lambda y: (lambda x: x)(y))(1)`. How about to delay the inner function's evaluation:  `(lambda x: x)(1)`?
+In effect, we'd like to evaluate the function itself __before__ any arguments get substituted. 
 
-By this way, we evaluated the function before any arguments get substituted. In fact, some typical functional languages behave in this way, however unfortunately, Python doesn't follow this style.
+> This is called normal order.
+
+Evaluation strategy is just a choice, and some typical functional languages behave like the normal order, however unfortunately, Python doesn't follow this style.
 
 ### The way to delay evaluation
 
-So if we want to delay the evaluation of an argument, what should we do? Say we don't want it to evaluate `3+3` right now, we can wrap them into a function:
+So if we want to delay the evaluation of an expression, what should we do? Say we don't want Python to evaluate `3+3` right now, we can wrap them into a function:
 
 ```python
 another_f = lambda: 3 + 3
@@ -161,7 +158,7 @@ another_f = lambda: 3 + 3
 Thus, the `3+3` will only be evaluated when the function gets invoked as `another_f()`.
 
 > It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus.
-> Eta-converted Y-combinator is called Z-combinator。
+> It can be regarded as saving some code for future execution.
 
 ### Z-Combinator
 
@@ -172,35 +169,38 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(lambda *args: x(x)(*args)))
 print(Y(fac)(5))  # 120
 ```
 
-Let's do it step by step.
+> Eta-converted Y-combinator is called Z-combinator.
+
+It works! Let's examine it step by step.
 
 ```python
+# fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 fy = lambda y: fac(lambda *args: y(y)(*args))
 fy1 = lambda y1: fac(lambda *args: y1(y1)(*args))
 # (lambda x: i(x(x)))(lambda y: i(lambda *args: y(y)(*args)))
 # will be evaluated to
 fac(fy(fy1))
-# one more step
+# expand fy
 fac(fac(lambda *args: fy1(fy1)(*args)))
 # here the fy1 is captured into the closure
-# fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 fac(lambda n: 1 if n <= 1 else n * (lambda *args: fy1(fy1)(*args))(n - 1))
 ```
 
-And if you call `fy(fy)` or `fy(fy1)`, it'll not get trapped into endless recursion since inside `fy`, the `y` will not be invoked immediately. Instead, it'll just return the closure `lambda *args: y(y)(*args)`. Let's continue:
+So if you call `fy(fy)` or `fy(fy1)`, it'll not get trapped into endless recursion since inside `fy`, the `y` will not be invoked immediately. Instead, it'll just return the closure `lambda *args: y(y)(*args)`. Let's continue:
 
 ```python
-# eliminate *args
-ffac = lambda n: 1 if n <= 1 else n * fy1(fy1)(n - 1)
-# simplify fac(lambda n: 1 if n <= 1 else n * fy1(fy1)(n - 1))
+ffac = lambda n: 1 if n <= 1 else n * (lambda *args: fy1(fy1)(*args))(n - 1)
+# simplify
 fac(ffac)
-# substitute once again
+# expand once again
 (lambda n: 1 if n <= 1 else n * ffac(n - 1))
 # what abount n == 3?
 (lambda n: 1 if n <= 1 else n * ffac(n - 1))(3)
 # in else branch
 3 * ffac(2)
-# expand ffac
+# expand ffac(2)
+3 * 2 * (lambda *args: fy1(fy1)(*args))(1)
+# eliminate args
 3 * 2 * fy1(fy1)(1)
 # substitute
 3 * 2 * fac(lambda *args: fy1(fy1)(*args))(1)
@@ -213,11 +213,13 @@ zetafy1 = lambda *args: fy1(fy1)(*args)
 3 * 2 * 1  # == 6
 ```
 
-The complicated part disappeared like magic!
+The complicated part `zetafy1(n - 1)` disappeared like magic!
+
+> Every magic can be explained. The recursion stops when falling into the basic case `n <= 1`.
 
 ### The final version without variables
 
-Remember we cannot define variables in lambda calculus? So we just remove the variable name and get the final version:
+Remember we cannot define variables in lambda calculus? So we just remove the variable name and reach the final version:
 
 ```python
 print(
@@ -231,12 +233,12 @@ How neat!
 ### Other variants
 
 #### Recursive
-However, if we are not that strict, we can define Y-combinator in a simpler way with recursion like:
+However, if we are not that strict, we can define Y-combinator simply with recursion like:
 
 ```python
 # By fixed-point definition
 # Y = lambda f: f(Y(f))
-Z = lambda f: lambda *args: f(Z(f))(*args)  # eta converted to dodge recursion bug
+Z = lambda f: lambda *args: f(Z(f))(*args)  # eta converted to avoid endless recursion
 print(Z(lambda f: lambda n: 1 if n <= 1 else n * f(n - 1))(5))  # 120
 ```
 
@@ -250,6 +252,8 @@ print(
     (lambda x: f(lambda *args: x(x)(*args))))
   (lambda f: lambda n: 1 if n <= 1 else n * f(n - 1))(5))  # 120
 ```
+
+You'll get the same result. If you'd like to know why, evaluate it step by step.
 
 ## Conclusion
 
