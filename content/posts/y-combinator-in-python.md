@@ -179,7 +179,7 @@ It works! Let's examine it step by step.
 # fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)
 fy = lambda y: fac(lambda *args: y(y)(*args))
 fy1 = lambda y1: fac(lambda *args: y1(y1)(*args))
-# (lambda x: i(x(x)))(lambda y: i(lambda *args: y(y)(*args)))
+# (lambda x: fac(x(x)))(lambda y: fac(lambda *args: y(y)(*args)))
 # will be evaluated to
 fac(fy(fy1))
 # expand fy
