@@ -3,7 +3,7 @@ title = "The integration of FastAPI and Django ORM"
 date = "2020-10-12"
 cover = ""
 tags = ["Python", "web", "fastapi", "django"]
-description = "A step-by-step guide to integrate FastAPI and Django ORM"
+description = "A step-by-step guide to integrating FastAPI and Django ORM"
 showFullContent = false
 +++
 
@@ -13,7 +13,7 @@ This is the English translation of the Japanese original post at [qiita](https:/
 
 Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/fastapi). It's blazingly fast and painless to develop, with [5~10x performance enhancement](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune&l=zijzen-1r) over Django or Flask.
 
-I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its user system and admin page totally. I know it sounds greedy, but in fact there is such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
+I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its user system as well as admin page totally. I know it sounds greedy, but in fact there is such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
 
 > There's also a demerit undoubtedly. You cannot use asyncio ORM and this will hurt performance.
 >
@@ -66,7 +66,7 @@ The usage of each directory:
 - `models`: Django ORM
 - `routers`: FastAPI routers
 - `schemas`: FastAPI Pydantic models
-- `adapters`: The adapters to convert Django ORM to Pydantic validator
+- `adapters`: The adapters to convert Django ORMs to Pydantic validators
 
 ## Set up some data
 
@@ -145,12 +145,11 @@ def get_question(
     question: Question = Depends(adapters.retrieve_question),
 ) -> FastQuestion:
     return FastQuestion.from_model(question)
-
 ```
 
 ### `asgi.py`
 
-Let's also add FastAPI app into `mysite/asgi.py`.
+Let's also add a FastAPI app into `mysite/asgi.py`.
 
 ```python
 from fastapi import FastAPI
@@ -170,7 +169,7 @@ python manage.py collectstatic --noinput
 
 Now you can start FastAPI server by `uvicorn mysite.asgi:fastapp --reload` and start Django server by `uvicorn mysite.asgi:application --port 8001 --reload`.
 
-Then you'll get your favorite FastAPI's OpenAPI documentation at `http://127.0.0.1:8000/docs/` and don't forget to check Django admin at `http://127.0.0.1:8001/admin/`.
+Then you'll see your favorite FastAPI's OpenAPI documentation at `http://127.0.0.1:8000/docs/` and don't forget to check Django admin at `http://127.0.0.1:8001/admin/`.
 
 ## Conclusion
 
