@@ -7,7 +7,7 @@ enableGitInfo = true
 
 [params]
   # dir name of your blog content (default is `content/posts`)
-  contentTypeName = "posts"
+  # contentTypeName = "posts"
 
   # ["orange", "blue", "red", "green", "pink"]
   themeColor = "blue"
@@ -16,7 +16,7 @@ enableGitInfo = true
   showMenuItems = 2
 
   # show selector to switch language
-  showLanguageSelector = true
+  showLanguageSelector = false
 
   # set theme to full screen width
   fullWidthTheme = false
