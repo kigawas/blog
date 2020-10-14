@@ -70,7 +70,7 @@ The usage of each directory:
 
 ## Set up some data
 
-Let's refer the [Django documentation](https://docs.djangoproject.com/en/3.1/intro/tutorial02/) and insert some data:
+Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.1/intro/tutorial02/) and insert some data:
 
 ```python
 >>> from polls.models import Choice, Question
@@ -161,7 +161,7 @@ fastapp.include_router(router, tags=["questions"], prefix="/question")
 
 ### Run servers
 
-First is to generate static files for `uvicorn`:
+First is to generate static files for `uvicorn` (you may still need [whitenoise](https://whitenoise.evans.io/en/stable/)):
 
 ```bash
 python manage.py collectstatic --noinput
