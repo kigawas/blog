@@ -15,7 +15,7 @@ Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/f
 
 I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its user system as well as admin page totally. I know it sounds greedy, but in fact there is such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
 
-> There's also a demerit undoubtedly. You cannot use asyncio ORM and this will hurt performance.
+> There's also a demerit undoubtedly. Django ORM is not asynchronous and this will hurt performance.
 >
 > If you'd like to improve, you may consider using [orm](https://github.com/encode/orm) or [gino](https://github.com/python-gino/gino) to rewrite some logic.
 >
