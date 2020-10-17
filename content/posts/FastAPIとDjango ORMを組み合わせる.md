@@ -1,36 +1,34 @@
 +++
-title = "The integration of FastAPI and Django ORM"
-date = "2020-10-12"
+title = "FastAPIとDjango ORMを組み合わせる"
+date = "2020-08-21"
 cover = ""
 tags = ["Python", "web", "FastAPI", "Django"]
-description = "A step-by-step guide to integrating FastAPI and Django ORM"
+description = "FastAPIとDjango ORMを組み合わせるためのステップバイステップガイド"
 showFullContent = false
 +++
 
-This is the English translation of the Japanese original post at [qiita](https://qiita.com/kigawas/items/80e48ccce98a35f65fff), with some modifications.
+## 動機
 
-## Motivation
+最近 FastAPI が[破竹の勢い](https://star-history.t9t.io/#tiangolo/fastapi)で伸びているらしい。
 
-Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/fastapi). It's blazingly fast and painless to develop, with [5~10x performance enhancement](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune&l=zijzen-1r) over Django or Flask.
+Django から FastAPI に浮気をしたいけど、やはり Django やそのユーザーシステムを引き続き利用したい。欲張りに見えるが、実はそういういい都合もある。今回はどうやって Django ORM と FastAPI を組み合わせるかについて説明する。
 
-I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its self-sufficient user system as well as the admin page totally. I know it sounds greedy, but in fact there **is** such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
-
-> There's also a demerit undoubtedly. Django ORM is not asynchronous and this will hurt performance.
+> 当然デメリットもある。パーフォーマンス上は、asyncio 対応の ORM が使えなくなる。
 >
-> If you'd like to improve, you may consider using [orm](https://github.com/encode/orm) or [gino](https://github.com/python-gino/gino) to rewrite some logic.
+> パーフォーマンス上げたいなら、別途 [orm](https://github.com/encode/orm)、[gino](https://github.com/python-gino/gino) などのモデルを作成するがよい。
 >
-> By the way, Django ORM is also [having a plan](https://docs.djangoproject.com/en/3.1/topics/async/) for supporting asyncio.
+> 因みに、Django ORM も asyncio に対応する[予定があるらしい](https://docs.djangoproject.com/en/3.1/topics/async/)。
 
-## Directory structure
+## フォルダ構造
 
-Let's talk about the directory structure first. You can just follow Django's [tutorial](https://docs.djangoproject.com/en/3.1/intro/tutorial01/) to create the scaffold.
+まず、フォルダ構成について話す。フォルダの内容は Django ドキュメントのチュートリアルに基づいて作成していい。詳細は[ここ](https://docs.djangoproject.com/en/3.1/intro/tutorial01/)。
 
 ```bash
 django-admin startproject mysite
 django-admin startapp poll
 ```
 
-If you're done, delete `views.py` and `models.py` and prepare the folders for FastAPI like below.
+ファイルを生成した後、`views.py`と`models.py`を削除して、下記のように FastAPI 用のフォルダを用意する。
 
 ```bash
 $ tree -L 3 -I '__pycache__|venv' -P '*.py'
@@ -61,18 +59,18 @@ $ tree -L 3 -I '__pycache__|venv' -P '*.py'
 7 directories, 15 files
 ```
 
-The usage of each directory:
+各フォルダの使い分け：
 
-- `models`: Django ORM
-- `routers`: FastAPI routers
-- `adapters`: The adapters to retrieve Django ORMs
-- `schemas`: FastAPI Pydantic models
+- `models`フォルダ：Django ORM
+- `routers`フォルダ：FastAPI routers
+- `schemas`フォルダ：FastAPI の Pydantic バリデータ
+- `adapters`フォルダ：Django ORM を取得
 
-For a typical FastAPI application, there should be an ORM part and a Pydantic models/validators part, for how to convert ORMs to Pydantic models, normally we'd like to utilize the [ORM mode](https://pydantic-docs.helpmanual.io/usage/models/#orm-mode-aka-arbitrary-class-instances).
+ORM を使う FastAPI のウェブサービスにとって、ORM と Pydantic モデルの両方が存在する。いかに ORM を Pydantic モデルに変換するかというと、Pydantic の[ORM モード](https://pydantic-docs.helpmanual.io/usage/models/#orm-mode-aka-arbitrary-class-instances)を使うのは普通。
 
-## Set up some data
+## データを用意
 
-Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.1/intro/tutorial02/) and insert some data:
+[Django ドキュメント](https://docs.djangoproject.com/en/3.1/intro/tutorial02/)を参考にして、データを入れてみる。
 
 ```python
 >>> from polls.models import Choice, Question
@@ -81,9 +79,9 @@ Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.1/
 >>> q.save()
 ```
 
-## FastAPI integration
+## FastAPI 導入
 
-For simplicity, the codes below are all in the `__init__.py` file of each folder, and I'll also ignore some `import` statements.
+簡略化するため、下の例はフォルダの`__init__.py`に入れる。一部の`import`も省略する。
 
 ### `schemas`
 
@@ -192,7 +190,7 @@ def get_choice(choice: Choice = Depends(adapters.retrieve_choice)) -> FastChoice
 
 ### `asgi.py`
 
-Let's also add a FastAPI app into `mysite/asgi.py`.
+`mysite/asgi.py`に、FastAPI の App の起動も追加。
 
 ```python
 from fastapi import FastAPI
@@ -204,20 +202,20 @@ fastapp.include_router(questions_router, tags=["questions"], prefix="/question")
 fastapp.include_router(choices_router, tags=["choices"], prefix="/choice")
 ```
 
-### Run servers
+### 立ち上げ
 
-First is to generate static files for `uvicorn` (you may still need [whitenoise](https://whitenoise.evans.io/en/stable/)):
+まず、`uvicorn`用のスタティックファイルを作成（[whitenoise](http://whitenoise.evans.io/en/stable/index.html)も必要）：
 
 ```bash
 python manage.py collectstatic --noinput
 ```
 
-Now you can start FastAPI server by `uvicorn mysite.asgi:fastapp --reload` and start Django server by `uvicorn mysite.asgi:application --port 8001 --reload`.
+FastAPI は`uvicorn mysite.asgi:fastapp --reload`で、Django は`uvicorn mysite.asgi:application --port 8001 --reload`で起動。
 
-Then you'll see your favorite FastAPI's OpenAPI documentation at `http://127.0.0.1:8000/docs/` and don't forget to check Django admin at `http://127.0.0.1:8001/admin/`.
+FastAPI の Doc は`http://127.0.0.1:8000/docs/`に、Django の admin 画面は`http://127.0.0.1:8001/admin/`にアクセス。
 
-## Conclusion
+## まとめ
 
-It's easier than we thought to integrate FastAPI and Django ORM, if you tactically separate the adapters of connecting Django ORM and Pydantic models, you'll get a clear and concise directory structure - easy to write and easy to maintain.
+FastAPI と Django ORM の組み合わせは意外と簡単で、上手にインテグレーションの部分を分けると、すっきりとしたフォルダ構造もできるのである。
 
-The whole project is also at my [Github](https://github.com/kigawas/fastapi-django), feel free to play with it.
+上のコードは筆者の[Github](https://github.com/kigawas/fastapi-django)にもある。
