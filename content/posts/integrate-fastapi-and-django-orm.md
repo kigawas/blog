@@ -13,7 +13,7 @@ This is the English translation of the Japanese original post at [qiita](https:/
 
 Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/fastapi). It's blazingly fast and painless to develop, with [5~10x performance enhancement](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune&l=zijzen-1r) over Django or Flask.
 
-I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its user system as well as admin page totally. I know it sounds greedy, but in fact there is such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
+I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its self-sufficient user system as well as the admin page totally. I know it sounds greedy, but in fact there **is** such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
 
 > There's also a demerit undoubtedly. Django ORM is not asynchronous and this will hurt performance.
 >
@@ -65,8 +65,10 @@ The usage of each directory:
 
 - `models`: Django ORM
 - `routers`: FastAPI routers
+- `adapters`: The adapters to retrieve Django ORMs
 - `schemas`: FastAPI Pydantic models
-- `adapters`: The adapters to convert Django ORMs to Pydantic validators
+
+For a typical FastAPI application, there should be an ORM part and a Pydantic models/validators part, for how to convert ORMs to Pydantic models, normally we'd like to utilize the [ORM mode](https://pydantic-docs.helpmanual.io/usage/models/#orm-mode-aka-arbitrary-class-instances).
 
 ## Set up some data
 
@@ -89,27 +91,18 @@ For simplicity, the codes below are all in the `__init__.py` file of each folder
 from django.db import models
 from pydantic import BaseModel as _BaseModel
 
-
 class BaseModel(_BaseModel):
     @classmethod
-    def from_model(cls, instance: models.Model):
-        kwargs = {}
-        for k, v in cls.__fields__.items():
-            instance_attr = getattr(instance, k)
-            if isinstance(instance_attr, models.Model):
-                instance_attr = v.type_.from_model(instance_attr)
-            kwargs[k] = instance_attr
-
-        return cls(**kwargs)
-
-    @classmethod
-    def from_models(cls, instances: List[models.Model]):
-        return [cls.from_model(inst) for inst in instances]
+    def from_orms(cls, instances: List[models.Model]):
+        return [cls.from_orm(inst) for inst in instances]
 
 
 class FastQuestion(BaseModel):
     question_text: str
     pub_date: datetime
+
+    class Config:
+        orm_mode = True
 
 
 class FastQuestions(BaseModel):
@@ -117,12 +110,15 @@ class FastQuestions(BaseModel):
 
     @classmethod
     def from_qs(cls, qs):
-        return cls(items=FastQuestion.from_models(qs))
+        return cls(items=FastQuestion.from_orms(qs))
 
 
 class FastChoice(BaseModel):
     question: FastQuestion
     choice_text: str
+
+    class Config:
+        orm_mode = True
 
 
 class FastChoices(BaseModel):
@@ -130,7 +126,7 @@ class FastChoices(BaseModel):
 
     @classmethod
     def from_qs(cls, qs):
-        return cls(items=FastChoice.from_models(qs))
+        return cls(items=FastChoice.from_orms(qs))
 ```
 
 ### `adapters`
@@ -180,7 +176,7 @@ def get_questions(
 def get_question(
     question: Question = Depends(adapters.retrieve_question),
 ) -> FastQuestion:
-    return FastQuestion.from_model(question)
+    return FastQuestion.from_orm(question)
 
 @router.get("/")
 def get_choices(
@@ -191,7 +187,7 @@ def get_choices(
 
 @router.get("/{c_id}")
 def get_choice(choice: Choice = Depends(adapters.retrieve_choice)) -> FastChoice:
-    return FastChoice.from_model(choice)
+    return FastChoice.from_orm(choice)
 ```
 
 ### `asgi.py`
