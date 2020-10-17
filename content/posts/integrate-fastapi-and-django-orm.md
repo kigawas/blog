@@ -68,7 +68,7 @@ The usage of each directory:
 - `adapters`: The adapters to retrieve Django ORMs
 - `schemas`: FastAPI Pydantic models
 
-For a typical FastAPI application, there should be an ORM part and a Pydantic models/validators part, for how to convert ORMs to Pydantic models, normally we'd like to utilize the [ORM mode](https://pydantic-docs.helpmanual.io/usage/models/#orm-mode-aka-arbitrary-class-instances).
+For a typical FastAPI application, there should be an ORM part and a Pydantic model/validator part, for how to convert ORMs to Pydantic models, normally we'd like to utilize the [ORM mode](https://pydantic-docs.helpmanual.io/usage/models/#orm-mode-aka-arbitrary-class-instances).
 
 ## Set up some data
 
