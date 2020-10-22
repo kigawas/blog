@@ -163,29 +163,30 @@ def retrieve_choices():
 ### `routers`
 
 ```python
-router = APIRouter()
+q_router = APIRouter()
+c_router = APIRouter()
 
-@router.get("/")
+@q_router.get("/")
 def get_questions(
     questions: List[Question] = Depends(adapters.retrieve_questions),
 ) -> FastQuestions:
     return FastQuestions.from_qs(questions)
 
 
-@router.get("/{q_id}")
+@q_router.get("/{q_id}")
 def get_question(
     question: Question = Depends(adapters.retrieve_question),
 ) -> FastQuestion:
     return FastQuestion.from_orm(question)
 
-@router.get("/")
+@c_router.get("/")
 def get_choices(
     choices: List[Choice] = Depends(adapters.retrieve_choices),
 ) -> FastChoices:
     return FastChoices.from_qs(choices)
 
 
-@router.get("/{c_id}")
+@c_router.get("/{c_id}")
 def get_choice(choice: Choice = Depends(adapters.retrieve_choice)) -> FastChoice:
     return FastChoice.from_orm(choice)
 ```
