@@ -31,7 +31,7 @@ In this article, we'll discuss how to do it in Python.
 
 Let's break the daunting lambda expression into smaller pieces. For simplicity, it can be split into two parts: inner and outer.
 
-First, let's have a look at the outer side. It's actually accepting an argument `f` and returning the result of  `λx. (f (x x))` invoked with the argument `λx. (f (x x))`.
+First, let's have a look at the outer side. It's actually accepting an argument `f` and returning the result of `λx. (f (x x))` invoked with the argument `λx. (f (x x))`.
 
 ### Inner lambda
 
@@ -66,7 +66,7 @@ Y = lambda f: (lambda x: f(x(x)))(lambda x: f(x(x)))
 
 ## How to use Y-combinator
 
-You may want to ask, how should we use this weird thing to implement recursion __without__ defining any function? Well, let's take the factorial calculation as an example.
+You may want to ask, how should we use this weird thing to implement recursion **without** defining any function? Well, let's take the factorial calculation as an example.
 
 ### First try
 
@@ -127,7 +127,7 @@ Yes, that's almost right. Let's dig into something else. What if we call a funct
 
 Obviously you'll see `1`, but in what order Python evaluates its arguments?
 
-As mentioned above, Python will evaluate arguments eagerly, so it will become  `(lambda x: x)(1)`, then `1`.
+As mentioned above, Python will evaluate arguments eagerly, so it will become `(lambda x: x)(1)`, then `1`.
 
 > This is called applicative order.
 
@@ -143,7 +143,7 @@ i((lambda y: i(y(y)))(lambda y: i(y(i(y(i(y(...))))))))
 
 Here when Python evaluates the argument `lambda y: i(y(y))`, it'll recursively call `y` as a function over and over again. Yet, how can we cease the endless recursion? Or how can we only recursively get it called just once or twice or thrice?
 
-In effect, we'd like to evaluate the function itself __before__ any arguments get substituted.
+In effect, we'd like to evaluate the function itself **before** any arguments get substituted.
 
 > This is called normal order.
 
@@ -151,7 +151,7 @@ Evaluation strategy is just a choice, and some typical functional languages beha
 
 ### The way to delay evaluation
 
-So if we want to delay the evaluation of an expression, what should we do? Say we don't want Python to evaluate `3+3` right now, we can wrap them into a function:
+So if we want to delay the evaluation of an expression, what should we do? Say we don't want Python to evaluate `3 + 3` right now, we can wrap them into a function:
 
 ```python
 another_f = lambda: 3 + 3
@@ -159,8 +159,7 @@ another_f = lambda: 3 + 3
 
 Thus, the `3+3` will only be evaluated when the function gets invoked as `another_f()`.
 
-> It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus.
-> It can be regarded as saving some code for future execution.
+> It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus, which can be regarded as saving some code for future execution.
 
 ### Z-Combinator
 
