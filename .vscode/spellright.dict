@@ -4,3 +4,16 @@ gino
 asyncio
 Pydantic
 whitenoise
+fastapi
+sanic
+asyncio
+uvloop
+asyncpg
+gino
+golang
+gonic
+unfancy
+picohttpparser
+Japronto
+Beego
+Cython
