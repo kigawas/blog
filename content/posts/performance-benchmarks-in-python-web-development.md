@@ -161,7 +161,7 @@ class User(Model):
 
 When they get invoked, ORM does the hardest task: converting the query expressions to raw SQLs. As you know, this is pretty sluggish and hurts performance badly, especially in Python.
 
-> I didn't test very rigorously, but it may slow server dow by 30% approximately.
+> I didn't test very rigorously, but it may slow the server by 30% approximately.
 
 If ORM is so slow, what about writing raw SQLs directly?
 
