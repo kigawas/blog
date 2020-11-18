@@ -3,7 +3,7 @@ title = "Why state containers are necessary"
 date = "2020-11-18"
 cover = ""
 tags = ["JavaScript", "Redux", "State container"]
-description = "Understand and implement redux from scratch"
+description = "Understand and implement state containers like redux from scratch"
 showFullContent = false
 +++
 
@@ -11,7 +11,7 @@ This article is partially based on [a prior art](https://www.zhihu.com/question/
 
 ## Overview
 
-In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and they can be found in blogs all over the internet. In contrast, we'll walk through the simplest scenario: states in module `A` changed and module `B` needs to know and react.
+In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and they can be found in blogs all over the internet. In contrast, we'll walk through the simplest scenario: states in module `A` has changed and module `B` needs to know and react.
 
 ### Ancient style
 
@@ -127,7 +127,7 @@ export const bus = (() => {
 })();
 ```
 
-This evolved version becomes pretty similar with redux. Finally `this.count` can be eliminated in module `A` and `B`:
+This evolved version becomes pretty similar to redux. Finally `this.count` can be eliminated in module `A` and `B`:
 
 ```js
 import { bus } from "./event-bus";
@@ -156,7 +156,7 @@ class B {
 
 ### Redux-like solution
 
-In this version, everything is functional except `A` and `B`, and probably `A` and `B` are also unnecessary. If we borrow the idea from redux:
+In event bus version, everything is functional except `A` and `B`, and probably `A` and `B` are also unnecessary. If we borrow the idea from redux and rewrite:
 
 ```js
 const createStore = (reducer) => {
@@ -209,7 +209,7 @@ Now we built our yet another state container library from scratch! If more power
 
 ```js
 const createStore = (reducer) => {
-  let states = [reducer()];
+  const states = [reducer()];
   let sp = 0; // stack pointer
   const listeners = new Set();
 
