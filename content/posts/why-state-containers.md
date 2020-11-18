@@ -1,0 +1,256 @@
++++
+title = "Why state containers are necessary"
+date = "2020-11-18"
+cover = ""
+tags = ["JavaScript", "Redux", "State container"]
+description = "Understand and implement redux from scratch"
+showFullContent = false
++++
+
+This article is partially based on [a prior art](https://www.zhihu.com/question/63726609/answer/934233429).
+
+## Overview
+
+In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and they can be found in blogs all over the internet. In contrast, we'll walk through the simplest scenario: states in module `A` changed and module `B` needs to know and react.
+
+### Ancient style
+
+```js
+class B {
+  count = 0;
+  updateCount(count) {
+    this.count = count;
+  }
+}
+
+class A {
+  count = 0;
+  b = new B();
+  increase() {
+    this.count += 1;
+    this.b.updateCount(this.count);
+  }
+}
+```
+
+This solution is easy to understand, however it has a mortal defect: `A` needs to be aware of `B`'s interface. As the complexity grows, the whole program would be a spaghetti thus no one can or want to maintain.
+
+### Event bus
+
+In order to resolve this, a design pattern called "event bus" appeared:
+
+```js
+// event bus (not complete)
+export const bus = (() => {
+  const listeners = {};
+  return {
+    dispatch(eventName, ...params) {
+      const listener = listeners[eventName];
+      if (listener !== undefined) {
+        listener(...params);
+      }
+    },
+    on(eventName, listener) {
+      listeners[eventName] = listener;
+    },
+  };
+})();
+
+class A {
+  count = 0;
+  increase(n) {
+    this.count += n;
+    bus.dispatch("INCREASE_COUNT", n);
+  }
+}
+
+class B {
+  count = 0;
+  constructor() {
+    bus.on("INCREASE_COUNT", (n) => (this.count += n));
+  }
+}
+```
+
+Now `A` and `B` are decoupled. Then one aesthetic problem remains: there is still a redundant `count` update in `A`, which can be moved into the closure.
+
+```js
+class A {
+  count = 0;
+  constructor() {
+    bus.on("INCREASE_COUNT", (n) => (this.count += n));
+  }
+  increase(n) {
+    bus.dispatch("INCREASE_COUNT", n);
+  }
+}
+```
+
+Looks better, but there occurs another problem: `this.count += n` repeats. What we really wanted to do is to get the newest replica of `count`, unfortunately we wrote the logic to increase count (`this.count += n`) in every module as well.
+
+### Event bus with state
+
+To eliminate `count` in each module, it's better to use a common state and update the state in the event bus:
+
+```js
+// event bus (with state)
+const initialState = {
+  count: 0,
+};
+
+export const bus = (() => {
+  const state = initialState;
+  const listeners = new Set();
+  function updateState(eventName, ...params) {
+    switch (eventName) {
+      case "INCREASE_COUNT": {
+        state.count += params[0];
+        break;
+      }
+      default:
+    }
+  }
+  return {
+    getState() {
+      return state;
+    },
+    dispatch(eventName, ...params) {
+      updateState(eventName, ...params);
+      for (const listener of listeners) {
+        listener();
+      }
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+    },
+  };
+})();
+```
+
+This evolved version becomes pretty similar with redux. Finally `this.count` can be eliminated in module `A` and `B`:
+
+```js
+import { bus } from "./event-bus";
+
+class A {
+  constructor() {
+    bus.subscribe(() => {
+      const { count } = bus.getState();
+      // do something with count...
+    });
+  }
+  increase(n) {
+    bus.dispatch("INCREASE_COUNT", n);
+  }
+}
+
+class B {
+  constructor() {
+    bus.subscribe(() => {
+      const { count } = bus.getState();
+      // do something with count...
+    });
+  }
+}
+```
+
+### Redux-like solution
+
+In this version, everything is functional except `A` and `B`, and probably `A` and `B` are also unnecessary. If we borrow the idea from redux:
+
+```js
+const createStore = (reducer) => {
+  let state = reducer();
+  const listeners = new Set();
+
+  return {
+    getState() {
+      return state;
+    },
+    dispatch(action) {
+      state = reducer(state, action);
+      for (const listener of listeners) {
+        listener();
+      }
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+    },
+  };
+};
+
+const countStore = createStore((state = { count: 0 }, action = { type: "" }) => {
+  switch (action.type) {
+    case "INCREASE_COUNT":
+      return { count: state.count + action.count };
+    default:
+      return state;
+  }
+});
+
+countStore.subscribe(() => {
+  // handler A
+  const { count } = countStore.getState();
+  console.log("A count:", count);
+});
+
+countStore.subscribe(() => {
+  // handler B
+  const { count } = countStore.getState();
+  console.log("B count:", count);
+});
+
+const increase = (n) => {
+  countStore.dispatch({ type: "INCREASE_COUNT", count: n });
+};
+```
+
+Now we built our yet another state container library from scratch! If more powerful capabilities (like undo/redo, state persistence) are needed:
+
+```js
+const createStore = (reducer) => {
+  let states = [reducer()];
+  let sp = 0; // stack pointer
+  const listeners = new Set();
+
+  function notify() {
+    for (const listener of listeners) {
+      listener();
+    }
+  }
+  function max(a, b) {
+    return a > b ? a : b;
+  }
+  function min(a, b) {
+    return a < b ? a : b;
+  }
+
+  return {
+    getState() {
+      return states[sp];
+    },
+    redo() {
+      sp = min(sp + 1, states.length - 1);
+      notify();
+    },
+    undo() {
+      sp = max(sp - 1, 0);
+      notify();
+    },
+    dispatch(action) {
+      states.push(reducer(this.getState(), action));
+      sp += 1;
+      notify();
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+    },
+  };
+};
+```
+
+### Conclusion
+
+Programming is about the art to control complexity. State containers not just separate the state and the logic but force you to think in an event-based and functional way, which is a ubiquitous pattern among many modern programming languages and frameworks.
+
+The code above can be found at [repl.it](https://repl.it/talk/share/Why-state-container-blog-code/80447).
