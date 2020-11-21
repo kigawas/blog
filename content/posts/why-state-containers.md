@@ -33,7 +33,7 @@ class A {
 }
 ```
 
-This solution is easy to understand, however it has a mortal defect: `A` needs to be aware of `B`'s interface. As the complexity grows, the whole program would be a spaghetti thus no one can or want to maintain.
+This solution is easy to understand, however it has a mortal defect: `A` needs to be aware of `B`'s interface. As the complexity grows, the whole program would be a spaghetti thus no one can or wants to maintain.
 
 ### Event bus
 
