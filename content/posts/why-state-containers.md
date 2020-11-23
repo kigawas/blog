@@ -11,7 +11,7 @@ This article is partially based on [a prior art](https://www.zhihu.com/question/
 
 ## Overview
 
-In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and they can be found in blogs all over the internet. In contrast, we'll walk through the simplest scenario: states in module `A` has changed and module `B` needs to know and react.
+In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and they can be found in blogs all over the internet. In contrast, we'll walk through the simplest scenario: states in module `A` have changed and module `B` needs to know and react.
 
 ### Ancient style
 
