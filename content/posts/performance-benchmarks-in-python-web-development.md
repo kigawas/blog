@@ -90,7 +90,7 @@ The coroutine `receive` transforms HTTP requests into Python dictionaries such a
 
 Calling the coroutine by `await send(...)` will send the response to client, as imagined, the coroutine `application` is called every time when there comes a request from a client.
 
-It's confident to say web server handle more requests with `asyncio`, but it cannot speed up one request - in effect, it gets slightly **slower in each request**.
+It's confident to say web servers handle more requests with `asyncio`, but it cannot speed up one request - in effect, it gets slightly **slower in each request**.
 
 ## Tips on performance and benchmarks
 
