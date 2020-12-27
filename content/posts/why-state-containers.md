@@ -238,8 +238,13 @@ const createStore = (reducer) => {
       notify();
     },
     dispatch(action) {
-      states.push(reducer(this.getState(), action));
+      const newState = reducer(this.getState(), action);
       sp += 1;
+      if (sp === states.length) {
+        states.push(newState);
+      } else {
+        states[sp] = newState;
+      }
       notify();
     },
     subscribe(listener) {
