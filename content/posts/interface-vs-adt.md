@@ -91,13 +91,13 @@ So far so good. But is there a different way doing this? Before we step into the
 
 ## A prime of algebraic data types
 
-An algebraic data type, or ADT (not to be confused with [abstract data type](https://en.wikipedia.org/wiki/Abstract_data_type), is a composite type. There are two common algebraic data types: sum types and product types.
+An algebraic data type, or ADT (not to be confused with [abstract data type](https://en.wikipedia.org/wiki/Abstract_data_type)), is a composite type. There are two common algebraic data types: sum types and product types.
 
 Their names look mathematical, but in fact they are just very simple notions. If you know some Python, a sum type in Python is [`Union`](https://docs.python.org/3/library/typing.html#typing.Union), and a product type is [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple).
 
 So why call it "sum/product" type? Say you have a union `A` for `int` or `bool`, `int` can only be `1`, `2` or `3` and `bool` can only be `True` or `False`, how many different objects of `A` can you get? The answer is easy: if `A` is `int`, then you have three choices; if `A` is `bool`, then two; if you add them up, you get five.
 
-This also applies to a product type, or tuple `(int, bool)`. For the first element, you have three choices and for the second element you have two, so you have six (3 times 2): `(1, True)`, `(2, True)`, `(3, True)`, `(1, False)`, `(2, False)`, `(3, False)`.
+This also applies to a product type, e.g. a tuple `(int, bool)`. For the first element, you have three choices and for the second element you have two, so you have six (3 times 2): `(1, True)`, `(2, True)`, `(3, True)`, `(1, False)`, `(2, False)`, `(3, False)`.
 
 Now everything gets clear, for a sum type `S = A | B`, an object of `S` is either `A` or `B` which means the number of different objects is the sum of `A` and `B`; for a product type `P = (A, B)`, the number of different objects is the product of `A` and `B`.
 
@@ -174,7 +174,7 @@ impl IAnimal for Cat {
 }
 ```
 
-Obviously it's more verbose, specifically, we have three `talk`s and `info`s and the implementation scatters here and there. Ever worse, the `interface` implementation is not exhaustive: If we add another animal, say `Sheep`, it won't notice we if we haven't implemented the `IAnimal`. But if we choose the sum type, Rust compiler will complain like:
+Obviously it's more verbose, specifically, we have three `talk`s and `info`s and the implementation scatters here and there. Ever worse, the `interface` implementation is not exhaustive: If we add another animal, say `Sheep`, it won't notice us if we haven't implemented `IAnimal`. But if we choose the sum type, Rust compiler will complain like:
 
 ```rust
 error[E0004]: non-exhaustive patterns: `&Sheep(_)` not covered
