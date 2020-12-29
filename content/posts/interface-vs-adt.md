@@ -9,7 +9,7 @@ showFullContent = false
 
 ## Overview
 
-Object-oriented programming is a ubiquitous paradigm all over the software development field as it could be found in the most of prevalent languages: C++, C#, Java, JavaScript, Python, etc. [Polymorphism](<https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>), one of an important characteristic in OOP, is often implemented by sub-typing in a typical OOP language.
+Object-oriented programming is a ubiquitous paradigm all over the software development field as it could be found in the most of prevalent languages: C++, C#, Java, JavaScript, Python, etc. [Polymorphism](<https://en.wikipedia.org/wiki/Polymorphism_(computer_science)>), an important characteristic in OOP, is often implemented by sub-typing in a typical OOP language.
 
 ```java
 interface Animal {
@@ -29,7 +29,7 @@ class Dog implements Animal {
 }
 ```
 
-The `interface`, or`abstract class` in some languages, here indicates **a protocol of shared behaviors**, normally there's no way to get access to data in the interface, thus, only a few of default behavior can be implemented in the interface instead of in its subclasses.
+The `interface`, or`abstract class` in some languages, here indicates **a protocol of shared behaviors**, normally there's no way to get access to data in the interface, thus, only a few of default behaviors can be implemented in the interface rather than in its subclasses.
 
 In Java, interface methods cannot have body:
 
@@ -42,7 +42,7 @@ interface Shape {
 }
 ```
 
-In C++, an interface method can have body, but it won't work if there're no member variables.
+In C++, interface methods can have body, but they won't work if there're no member variables.
 
 > C++ has no pure "interface", which doesn't allow variables. You can define variables in the abstract class willy-nilly, albeit not recommended.
 
@@ -51,6 +51,7 @@ class Shape {
     public:
         virtual void printCoordinates() {
             // error: 'class Shape' has no member named 'x'
+            // error: 'class Shape' has no member named 'y'
             printf("(%d, %d)", this -> x, this -> y);
         }
 };
