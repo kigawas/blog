@@ -102,6 +102,10 @@ This also applies to a product type, e.g. a tuple `(int, bool)`. For the first e
 
 Now everything gets clear, for a sum type `S = A | B`, an object of `S` is either `A` or `B` which means the number of different objects is the sum of `A` and `B`; for a product type `P = (A, B)`, the number of different objects is the product of `A` and `B`.
 
+> "The number of different objects" is called "cardinality" mathematically.
+>
+> If you want to know more about algebraic data types, [this article](https://fsharpforfunandprofit.com/posts/type-size-and-design/) could be a good start.
+
 ## ADT in Rust
 
 In Rust, the sum type is `enum` and the product type is `struct`. Unlike the [`enum.Enum`](https://docs.python.org/3/library/enum.html) in Python, Rust's `enum` is powerful enough to be a composite of arbitrary types: `enum E = A | B | C | D ...` and `A`, `B`, `C`, `D` can also be sum types or product types.
