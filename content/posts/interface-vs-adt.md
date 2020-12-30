@@ -29,7 +29,7 @@ class Dog implements Animal {
 }
 ```
 
-The `interface`, or`abstract class` in some languages, here indicates **a protocol of shared behaviors**, normally there's no way to get access to data in the interface, thus, only a few of default behaviors can be implemented in the interface rather than in its subclasses.
+The `interface`, or `abstract class` in some languages, here indicates **a protocol of shared behaviors**, normally there's no way to get access to data in the interface, thus, only a few of default behaviors can be implemented in the interface rather than in its subclasses.
 
 In Java, interface methods cannot have body:
 
