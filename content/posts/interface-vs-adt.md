@@ -38,7 +38,7 @@ interface Shape {
     public void printCoordinates() {
         // error: interface abstract methods cannot have body
         System.out.println(String.format("(%s, %s)", this.x, this.y));
-    };
+    }
 }
 ```
 
@@ -148,9 +148,10 @@ impl Animal {
             &Self::Dog(Dog { id, age }) => println!("Dog: id: {}, age: {}", id, age),
         }
     }
+}
 ```
 
-The [`match`](https://doc.rust-lang.org/rust-by-example/flow_control/match.html) here stands for [pattern matching](https://en.wikipedia.org/wiki/Pattern_matching), which is a critical paradigm in functional programming. I'll omit details here, but let me just recap, you can regard it as an advanced version of `switch` in `C` or destructuring assignment in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) or [Python](https://blog.tecladocode.com/destructuring-in-python).
+The [`match`](https://doc.rust-lang.org/rust-by-example/flow_control/match.html) here stands for [pattern matching](https://en.wikipedia.org/wiki/Pattern_matching), which is a critical paradigm in functional programming. I'll omit details here, but let me just recap, you can regard it as an advanced version of `switch` in `C` and destructuring assignment in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) or [Python](https://blog.tecladocode.com/destructuring-in-python).
 
 So, what about the OOP equivalent in Rust?
 
