@@ -1,69 +1,75 @@
 baseURL = "/"
-languageCode = "en-us"
-title = "map(learn, world)"
-theme = "terminal"
 disqusShortname = "kigawas-blog"
 enableGitInfo = true
+languageCode = "en-us"
+theme = "terminal"
+title = "map(learn, world)"
 
 [params]
-  # dir name of your blog content (default is `content/posts`)
-  # contentTypeName = "posts"
+# dir name of your blog content (default is `content/posts`)
+# contentTypeName = "posts"
 
-  # ["orange", "blue", "red", "green", "pink"]
-  themeColor = "blue"
+# ["orange", "blue", "red", "green", "pink"]
+themeColor = "blue"
 
-  # if you set this to 0, only submenu trigger will be visible
-  showMenuItems = 2
+# if you set this to 0, only submenu trigger will be visible
+showMenuItems = 2
 
-  # show selector to switch language
-  showLanguageSelector = false
+# show selector to switch language
+showLanguageSelector = false
 
-  # set theme to full screen width
-  fullWidthTheme = false
+# set theme to full screen width
+fullWidthTheme = false
 
-  # center theme with default width
-  centerTheme = true
+# center theme with default width
+centerTheme = true
 
-  # set a custom favicon (default is a `themeColor` square)
-  favicon = "favicon.ico"
+# set a custom favicon (default is a `themeColor` square)
+favicon = "favicon.ico"
 
-  # set post to show the last updated
-  # If you use git, you can set `enableGitInfo` to `true` and then post will automatically get the last updated
-  showLastUpdated = true
-  # Provide a string as a prefix for the last update date. By default, it looks like this: 2020-xx-xx [Updated: 2020-xx-xx] :: Author
-  updatedDatePrefix = "Updated"
+# set post to show the last updated
+# If you use git, you can set `enableGitInfo` to `true` and then post will automatically get the last updated
+showLastUpdated = true
+# Provide a string as a prefix for the last update date. By default, it looks like this: 2020-xx-xx [Updated: 2020-xx-xx] :: Author
+updatedDatePrefix = "Updated"
 
-  # set all headings to their default size (depending on browser settings)
-  # it's set to `true` by default
-  # oneHeadingSize = false
+# set all headings to their default size (depending on browser settings)
+# it's set to `true` by default
+# oneHeadingSize = false
 
 [params.twitter]
-  # set Twitter handles for Twitter cards
-  # see https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#card-and-content-attribution
-  # do not include @
-  creator = "kigawas"
-  site = ""
+# set Twitter handles for Twitter cards
+# see https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#card-and-content-attribution
+# do not include @
+creator = "kigawas"
+site = ""
 
 [languages]
-  [languages.en]
-    languageName = "English"
-    title = "map(learn, world)"
-    subtitle = ""
-    owner = ""
-    keywords = ""
-    copyright = ""
-    menuMore = "Show more"
-    readMore = "Read more"
-    readOtherPosts = "Read other posts"
-    missingContentMessage = "Page not found..."
-    missingBackButtonLabel = "Back to home page"
+[languages.en]
+copyright = ""
+keywords = ""
+languageName = "English"
+menuMore = "Show more"
+missingBackButtonLabel = "Back to home page"
+missingContentMessage = "Page not found..."
+owner = ""
+readMore = "Read more"
+readOtherPosts = "Read other posts"
+subtitle = ""
+title = "map(learn, world)"
 
-    [languages.en.params.logo]
-      logoText = "map(learn, world)"
-      logoHomeLink = "/"
+[languages.en.params.logo]
+logoHomeLink = "/"
+logoText = "map(learn, world)"
 
-    [languages.en.menu]
-      [[languages.en.menu.main]]
-        identifier = "about"
-        name = "About"
-        url = "/about"
+[languages.en.menu]
+
+[[languages.en.menu.main]]
+identifier = "about"
+name = "About"
+url = "/about"
+
+[[languages.en.menu.main]]
+identifier = "projects"
+name = "Projects"
+url = "/projects"
