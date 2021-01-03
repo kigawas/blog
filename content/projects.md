@@ -45,3 +45,7 @@ Python implementation for [Understanding Computation](http://computationbook.com
 ### [fastapi-django](https://github.com/kigawas/fastapi-django)
 
 A demonstration for how to integrate FastAPI with Django ORM.
+
+### [flask-scaffold](https://github.com/kigawas/flask-scaffold)
+
+A scaffold to speed up launching a flask project, set up with minimal dependencies.
