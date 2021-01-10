@@ -66,6 +66,8 @@ Rust, which also [supports OOP](https://doc.rust-lang.org/book/ch17-00-oop.html)
 > Strictly speaking, `trait` in Rust [is different from](https://blog.rust-lang.org/2015/05/11/traits.html) `interface` or `abstract class` in other languages, that's why it has a different name `trait`.
 >
 > It doesn't matter if you don't know the difference while reading this article.
+>
+> If you are really curious, well, the major difference is that you can implement your own `trait` for classes from third-party libraries, without changing any code in those libraries. In contrast, `interface` or `abstarct class` won't allow you do this normally, especially in static languages like Java or C++.
 
 ```rust
 struct Dog;
