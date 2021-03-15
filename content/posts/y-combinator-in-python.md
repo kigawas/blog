@@ -138,7 +138,7 @@ This is why we got `RecursionError`. Let's review the `lambda f: (lambda x: f(x(
 # will be evaluated to:
 (lambda x: i(x(x)))(lambda y: i(y(y)))  # let's rename to avoid ambiguity
 # endless recursion:
-i((lambda y: i(y(y)))(lambda y: i(y(i(y(i(y(...))))))))
+i( lambda y: i(y(y)) )( lambda y: i(y(i(y(i(y(...)))))) )
 ```
 
 Here when Python evaluates the argument `lambda y: i(y(y))`, it'll recursively call `y` as a function over and over again. Yet, how can we cease the endless recursion? Or how can we only recursively get it called just once or twice or thrice?
@@ -151,13 +151,13 @@ Evaluation strategy is just a choice, and some typical functional languages beha
 
 ### The way to delay evaluation
 
-So if we want to delay the evaluation of an expression, what should we do? Say we don't want Python to evaluate `3 + 3` right now, we can wrap them into a function:
+In order to delay the evaluation of an expression, what should we do? Say we don't want Python to evaluate `3 + 3` right now, we can wrap them into a function:
 
 ```python
 another_f = lambda: 3 + 3
 ```
 
-Thus, the `3+3` will only be evaluated when the function gets invoked as `another_f()`.
+Thus, the `3 + 3` will only be evaluated when the function gets invoked as `another_f()`.
 
 > It is called "[eta conversion](https://wiki.haskell.org/Eta_conversion)" in lambda calculus, which can be regarded as saving some code for future execution.
 
