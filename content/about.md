@@ -1,12 +1,11 @@
 +++
 title = "About me"
+date = "2021-01-01"
 +++
 
 A Python & Rust developer.
 
-A blockchain and cryptography enthusiast.
-
-An amateur linguist and classicist.
+A blockchain and cryptography dilettante and a linguistics and classics aficionado.
 
 An expatriate in Tokyo, aspiring to be a real cosmopolitan.
 
