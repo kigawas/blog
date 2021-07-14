@@ -11,19 +11,19 @@ This is the English translation of the Japanese original post at [qiita](https:/
 
 ## Motivation
 
-Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/fastapi). It's blazingly fast and painless to develop, with [5~10x performance enhancement](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune&l=zijzen-1r) over Django or Flask.
+Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/fastapi). It's blazingly fast and painless to develop, with [5~10x performance enhancement](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=fortune&l=zijzen-sf) over Django or Flask.
 
 I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its self-sufficient user system as well as the admin page totally. I know it sounds greedy, but in fact there **is** such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
 
 > There's also a demerit undoubtedly. Django ORM is not asynchronous and this will hurt performance.
 >
-> If you'd like to improve, you may consider using [orm](https://github.com/encode/orm) or [gino](https://github.com/python-gino/gino) to rewrite some logic.
+> If you'd like to improve, you may consider using [orm](https://github.com/encode/orm), [gino](https://github.com/python-gino/gino) or [sqlalchemy 1.4+](https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html) to rewrite some logic.
 >
-> By the way, Django ORM is also [having a plan](https://docs.djangoproject.com/en/3.1/topics/async/) for supporting asyncio.
+> By the way, Django ORM is also [having a plan](https://docs.djangoproject.com/en/3.2/topics/async/) for supporting asyncio.
 
 ## Directory structure
 
-Let's talk about the directory structure first. You can just follow Django's [tutorial](https://docs.djangoproject.com/en/3.1/intro/tutorial01/) to create the scaffold.
+Let's talk about the directory structure first. You can just follow Django's [tutorial](https://docs.djangoproject.com/en/3.2/intro/tutorial01/) to create the scaffold.
 
 ```bash
 django-admin startproject mysite
@@ -72,7 +72,7 @@ For a typical FastAPI application, there should be an ORM part and a Pydantic mo
 
 ## Set up some data
 
-Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.1/intro/tutorial02/) and insert some data:
+Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.2/intro/tutorial02/) and insert some data:
 
 ```python
 >>> from polls.models import Choice, Question
@@ -163,30 +163,30 @@ def retrieve_choices():
 ### `routers`
 
 ```python
-q_router = APIRouter()
-c_router = APIRouter()
+question_router = APIRouter()
+choice_router = APIRouter()
 
-@q_router.get("/")
+@question_router.get("/")
 def get_questions(
     questions: List[Question] = Depends(adapters.retrieve_questions),
 ) -> FastQuestions:
     return FastQuestions.from_qs(questions)
 
 
-@q_router.get("/{q_id}")
+@question_router.get("/{q_id}")
 def get_question(
     question: Question = Depends(adapters.retrieve_question),
 ) -> FastQuestion:
     return FastQuestion.from_orm(question)
 
-@c_router.get("/")
+@choice_router.get("/")
 def get_choices(
     choices: List[Choice] = Depends(adapters.retrieve_choices),
 ) -> FastChoices:
     return FastChoices.from_qs(choices)
 
 
-@c_router.get("/{c_id}")
+@choice_router.get("/{c_id}")
 def get_choice(choice: Choice = Depends(adapters.retrieve_choice)) -> FastChoice:
     return FastChoice.from_orm(choice)
 ```
