@@ -15,15 +15,15 @@ Recently FastAPI is [growing incredibly](https://star-history.t9t.io/#tiangolo/f
 
 I really want to switch to FastAPI from Django, however, it's not that easy to give up Django and its self-sufficient user system as well as the admin page totally. I know it sounds greedy, but in fact there **is** such convenience. This time I'll show you how to integrate FastAPI and Django ORM simply and quickly.
 
-> There's also a demerit undoubtedly. Django ORM is not asynchronous and this will hurt performance.
+> There's also a demerit undoubtedly. Django ORM is [not fully asynchronous](https://docs.djangoproject.com/en/dev/topics/async/#queries-the-orm) and this will hurt performance sometimes.
 >
 > If you'd like to improve, you may consider using [orm](https://github.com/encode/orm), [gino](https://github.com/python-gino/gino) or [sqlalchemy 1.4+](https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html) to rewrite some logic.
 >
-> By the way, Django ORM is also [having a plan](https://docs.djangoproject.com/en/3.2/topics/async/) for supporting asyncio.
+> From Django 4.1, you can make [asynchronous queries](https://docs.djangoproject.com/en/dev/topics/db/queries/#async-queries) with Django ORM. Note that async transactions are not supported yet, and the PostgreSQL driver is [still `psycopg2`](https://docs.djangoproject.com/en/dev/ref/databases/#postgresql-notes).
 
 ## Directory structure
 
-Let's talk about the directory structure first. You can just follow Django's [tutorial](https://docs.djangoproject.com/en/3.2/intro/tutorial01/) to create the scaffold.
+Let's talk about the directory structure first. You can just follow Django's [tutorial](https://docs.djangoproject.com/en/dev/intro/tutorial01/) to create the scaffold.
 
 ```bash
 django-admin startproject mysite
@@ -131,33 +131,33 @@ class FastChoices(BaseModel):
 
 ### `adapters`
 
+We can make async queries from Django 4.1.
+
 ```python
 ModelT = TypeVar("ModelT", bound=models.Model)
 
 
-def retrieve_object(model_class: Type[ModelT], id: int) -> ModelT:
-    instance = model_class.objects.filter(pk=id).first()
+async def retrieve_object(model_class: Type[ModelT], id: int) -> ModelT:
+    instance = await model_class.objects.filter(pk=id).afirst()
     if not instance:
         raise HTTPException(status_code=404, detail="Object not found.")
     return instance
 
 
-def retrieve_question(
-    q_id: int = Path(..., description="get question from db")
-) -> Question:
-    return retrieve_object(Question, q_id)
+async def retrieve_question(q_id: int = Path(..., description="get question from db")):
+    return await retrieve_object(Question, q_id)
 
 
-def retrieve_choice(c_id: int = Path(..., description="get choice from db")):
-    return retrieve_object(Choice, c_id)
+async def retrieve_choice(c_id: int = Path(..., description="get choice from db")):
+    return await retrieve_object(Choice, c_id)
 
 
-def retrieve_questions():
-    return Question.objects.all()
+async def retrieve_questions():
+    return [q async for q in Question.objects.all()]
 
 
-def retrieve_choices():
-    return Choice.objects.all()
+async def retrieve_choices():
+    return [c async for c in Choice.objects.all()]
 ```
 
 ### `routers`
@@ -177,10 +177,6 @@ def register_routers(app: FastAPI):
 #### `routers/choices.py`
 
 ```python
-from polls import adapters
-from polls.models import Choice
-from polls.schemas import FastChoice, FastChoices
-
 router = APIRouter(prefix="/choice", tags=["choices"])
 
 
@@ -199,10 +195,6 @@ def get_choice(choice: Choice = Depends(adapters.retrieve_choice)) -> FastChoice
 #### `routers/questions.py`
 
 ```python
-from polls import adapters
-from polls.models import Question
-from polls.schemas import FastQuestion, FastQuestions
-
 router = APIRouter(prefix="/question", tags=["questions"])
 
 
