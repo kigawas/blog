@@ -72,7 +72,7 @@ For a typical FastAPI application, there should be an ORM part and a Pydantic mo
 
 ## Set up some data
 
-Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.2/intro/tutorial02/) and insert some data:
+Let's refer to the [Django documentation](https://docs.djangoproject.com/en/dev/intro/tutorial02/) and insert some data:
 
 ```python
 >>> from polls.models import Choice, Question
@@ -83,7 +83,7 @@ Let's refer to the [Django documentation](https://docs.djangoproject.com/en/3.2/
 
 ## FastAPI integration
 
-For simplicity, the codes below are all in the `__init__.py` file of each folder, and I'll also ignore some `import` statements.
+For simplicity, I'll ignore some `import` statements.
 
 ### `schemas`
 
@@ -162,33 +162,62 @@ def retrieve_choices():
 
 ### `routers`
 
+#### `routers/__init__.py`
 ```python
-question_router = APIRouter()
-choice_router = APIRouter()
+from .choices import router as choices_router
+from .questions import router as questions_router
 
-@question_router.get("/")
-def get_questions(
-    questions: List[Question] = Depends(adapters.retrieve_questions),
-) -> FastQuestions:
-    return FastQuestions.from_qs(questions)
+__all__ = ("register_routers",)
 
 
-@question_router.get("/{q_id}")
-def get_question(
-    question: Question = Depends(adapters.retrieve_question),
-) -> FastQuestion:
-    return FastQuestion.from_orm(question)
+def register_routers(app: FastAPI):
+    app.include_router(questions_router)
+    app.include_router(choices_router)
+```
+#### `routers/choices.py`
 
-@choice_router.get("/")
+```python
+from polls import adapters
+from polls.models import Choice
+from polls.schemas import FastChoice, FastChoices
+
+router = APIRouter(prefix="/choice", tags=["choices"])
+
+
+@router.get("/", response_model=FastChoices)
 def get_choices(
     choices: List[Choice] = Depends(adapters.retrieve_choices),
 ) -> FastChoices:
     return FastChoices.from_qs(choices)
 
 
-@choice_router.get("/{c_id}")
+@router.get("/{c_id}", response_model=FastChoice)
 def get_choice(choice: Choice = Depends(adapters.retrieve_choice)) -> FastChoice:
     return FastChoice.from_orm(choice)
+```
+
+#### `routers/questions.py`
+
+```python
+from polls import adapters
+from polls.models import Question
+from polls.schemas import FastQuestion, FastQuestions
+
+router = APIRouter(prefix="/question", tags=["questions"])
+
+
+@router.get("/", response_model=FastQuestions)
+def get_questions(
+    questions: List[Question] = Depends(adapters.retrieve_questions),
+) -> FastQuestions:
+    return FastQuestions.from_qs(questions)
+
+
+@router.get("/{q_id}", response_model=FastQuestion)
+def get_question(
+    question: Question = Depends(adapters.retrieve_question),
+) -> FastQuestion:
+    return FastQuestion.from_orm(question)
 ```
 
 ### `asgi.py`
@@ -197,17 +226,27 @@ Let's also add a FastAPI app into `mysite/asgi.py`.
 
 ```python
 from fastapi import FastAPI
-from polls.routers import choices_router
-from polls.routers import questions_router
+from fastapi.staticfiles import StaticFiles
 
 fastapp = FastAPI()
-fastapp.include_router(questions_router, tags=["questions"], prefix="/question")
-fastapp.include_router(choices_router, tags=["choices"], prefix="/choice")
+
+
+def init(app: FastAPI):
+    from polls.routers import register_routers
+
+    register_routers(app)
+
+    if settings.MOUNT_DJANGO_APP:
+        app.mount("/django", application)  # type:ignore
+        app.mount("/static", StaticFiles(directory="staticfiles"), name="static")
+
+
+init(fastapp)
 ```
 
 ### Run servers
 
-First is to generate static files for `uvicorn` (you may still need [whitenoise](https://whitenoise.evans.io/en/stable/)):
+First is to generate static files for `uvicorn` (you may still need [`whitenoise`](https://whitenoise.evans.io/en/stable/) if you don't mount the Django app with FastAPI):
 
 ```bash
 python manage.py collectstatic --noinput
@@ -216,6 +255,16 @@ python manage.py collectstatic --noinput
 Now you can start FastAPI server by `uvicorn mysite.asgi:fastapp --reload` and start Django server by `uvicorn mysite.asgi:application --port 8001 --reload`.
 
 Then you'll see your favorite FastAPI's OpenAPI documentation at `http://127.0.0.1:8000/docs/` and don't forget to check Django admin at `http://127.0.0.1:8001/admin/`.
+
+If you just need one ASGI app, the Django app can be mounted on FastAPI app:
+
+```python
+# in mysite/settings.py
+
+MOUNT_DJANGO_APP = True
+```
+
+Then the Django admin page can be found at `http://localhost:8000/django/admin`.
 
 ## Conclusion
 
