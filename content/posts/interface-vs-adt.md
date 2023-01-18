@@ -182,7 +182,7 @@ impl IAnimal for Cat {
 }
 ```
 
-Obviously it's more verbose, specifically, we have three `talk`s and `info`s and the implementation scatters here and there. Ever worse, the `interface` implementation is not exhaustive: If we add another animal, say `Sheep`, it won't notice us if we haven't implemented `IAnimal`. But if we choose the sum type, Rust compiler will complain like:
+Obviously it's more verbose, specifically, we have three `talk`s and `info`s and the implementation scatters here and there. Even worse, the `interface` implementation is not exhaustive: If we add another animal, say `Sheep`, it won't notice us if we haven't implemented `IAnimal`. But if we choose the sum type, Rust compiler will complain like:
 
 ```rust
 error[E0004]: non-exhaustive patterns: `&Sheep(_)` not covered
