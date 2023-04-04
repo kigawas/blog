@@ -11,9 +11,9 @@ This article is partially based on [a prior art](https://www.zhihu.com/question/
 
 ## Overview
 
-In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and they can be found in blogs all over the internet. In contrast, we'll walk through the simplest scenario: states in module `A` have changed and module `B` needs to know and react.
+In modern JavaScript development, using some state container is a prevalent practice: `redux` for `react` and `vuex` for `vue`. But why it is necessary to integrate those "awesome state containers"? There might be too many reasons and explanations can be found all over the internet. In contrast, before stepping into the next level, we'll walk through the simplest scenario: states in module `A` have changed and module `B` needs to know and react.
 
-### Ancient style
+### Archaic style
 
 ```js
 class B {
@@ -33,14 +33,14 @@ class A {
 }
 ```
 
-This solution is easy to understand, however it has a mortal defect: `A` needs to be aware of `B`'s interface. As the complexity grows, the whole program would be a spaghetti thus no one can or wants to maintain.
+This solution is easy to understand, however it has a mortal defect: `A` needs to be aware of `B`'s interface. As complexity grows, the whole program would be a piece of spaghetti thus no one can or wants to maintain.
 
 ### Event bus
 
-In order to resolve this, a design pattern called "event bus" appeared:
+In order to resolve it, a design pattern called "event bus" appeared:
 
 ```js
-// event bus (not complete)
+// event bus (not complete yet)
 export const bus = (() => {
   const listeners = {};
   return {
@@ -72,7 +72,7 @@ class B {
 }
 ```
 
-Now `A` and `B` are decoupled. Then one aesthetic problem remains: there is still a redundant `count` update in `A`, which can be moved into the closure.
+Now `A` and `B` are decoupled. One aesthetic problem still remains: there is a redundant `count` update in `A`. Actually it can be moved into the closure, so let `A` subscribe it as well.
 
 ```js
 class A {
@@ -86,11 +86,11 @@ class A {
 }
 ```
 
-Looks better, but there occurs another problem: `this.count += n` repeats. What we really wanted to do is to get the newest replica of `count`, unfortunately we wrote the logic to increase count (`this.count += n`) in every module as well.
+Looks better, but there occurs another problem: `this.count += n` repeats. What we really wanted to do is to get the newest replica of `count`, unfortunately we wrote the logic to increase count (`this.count += n`) in every module.
 
 ### Event bus with state
 
-To eliminate `count` in each module, it's better to use a common state and update the state in the event bus:
+To eliminate `count`, it's better to use a common state and update the state in the event bus:
 
 ```js
 // event bus (with state)
