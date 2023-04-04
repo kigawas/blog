@@ -254,6 +254,8 @@ const createStore = (reducer) => {
 };
 ```
 
+What will happen if we `dispatch` in `reducer`? An exercise for you.
+
 ### Conclusion
 
 Programming is about the art to control complexity. State containers not just separate the state and the logic but force you to think in an event-based and functional way, which is a ubiquitous pattern among many modern programming languages and frameworks.
