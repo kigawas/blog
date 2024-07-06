@@ -1,1 +1,2 @@
 *.sh
+.hugo_build.lock
