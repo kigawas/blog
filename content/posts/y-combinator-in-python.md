@@ -195,7 +195,7 @@ ffac = lambda n: 1 if n <= 1 else n * (lambda *args: fy1(fy1)(*args))(n - 1)
 fac(ffac)
 # expand once again
 (lambda n: 1 if n <= 1 else n * ffac(n - 1))
-# what abount n == 3?
+# what about n == 3?
 (lambda n: 1 if n <= 1 else n * ffac(n - 1))(3)
 # in else branch
 3 * ffac(2)
@@ -217,6 +217,15 @@ zetafy1 = lambda *args: fy1(fy1)(*args)
 The complicated part `zetafy1(n - 1)` disappeared like magic!
 
 > Every magic can be explained. The recursion stops when falling into the basic case `n <= 1`.
+>
+> More theoretically speaking, Y-combinator is a [fixed-point combinator](https://en.wikipedia.org/wiki/Fixed-point_combinator), defined as `Y(f) = f(Y(f))`.
+>
+> By definition, we have `Y(fac)(n) = fac(Y(fac))(n)`. Let's recap `fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)`, to simplify notation, let `f(n) = Y(fac)(n)`.
+>
+> 1. For `n = 1`, `f(1) = Y(fac)(1) = fac(Y(fac))(1) = 1`.
+> 2. For `n > 1`, `f(n) = Y(fac)(n) = fac(Y(fac))(n) = n * Y(fac)(n-1)`.
+>
+> Because `f(n-1) = Y(fac)(n-1)`, we have `f(n) = n * f(n-1) = n * (n-1) * ... * f(1) = n!` - this is exactly what we wanted to calculate.
 
 ### The final version without variables
 
@@ -235,7 +244,7 @@ How neat!
 
 #### Recursive
 
-However, if we are not that strict, we can define Y-combinator simply with recursion like:
+However, if we are not that picky, we can define Y-combinator simply with recursion like:
 
 ```python
 # By fixed-point definition

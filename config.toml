@@ -45,7 +45,7 @@ creator = "kigawas"
 site = ""
 
 [languages]
-[languages.en]
+[languages.en.params]
 copyright = ""
 keywords = ""
 languageName = "English"
