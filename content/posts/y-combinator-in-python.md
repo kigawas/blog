@@ -217,6 +217,14 @@ zetafy1 = lambda *args: fy1(fy1)(*args)
 The complicated part `zetafy1(n - 1)` disappeared like magic!
 
 > Every magic can be explained. The recursion stops when falling into the basic case `n <= 1`.
+> 
+> More theoretically speaking, Y-combinator is one of [fixed-point combinators](https://en.wikipedia.org/wiki/Fixed-point_combinator), defined as `Y(f) = f(Y(f))`.
+> By this definition, we have `Y(fac)(n) = fac(Y(fac))(n)`. Recap `fac = lambda f: lambda n: 1 if n <= 1 else n * f(n - 1)`, to simplify notation, let `f(n) = Y(fac)(n)`.
+> 
+> 1. For `n = 1`, `f(1) = Y(fac)(1) = fac(Y(fac))(1) = 1`.
+> 2. For `n > 1`, `f(n) = Y(fac)(n) = fac(Y(fac))(n) = n * Y(fac)(n-1)`.
+> 
+> Because `f(n-1) = Y(fac)(n-1)`, we have `f(n) = n * f(n-1) = n * (n-1) * ... * f(1) = n!` - this is exactly what we wanted to calculate.
 
 ### The final version without variables
 
