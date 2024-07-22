@@ -29,7 +29,7 @@ Full stack frameworks offer a tempting proposition: a complete solution promisin
 - **Performance Overhead**: Convenience often translates to additional layers, which can impact performance.
 - **Steep Learning Curve**: Mastering these frameworks can be time-consuming, potentially offsetting initial productivity gains.
 
-### The Micro Framework Tightrope: The Build-Your-Own-Adventure
+### The Micro Framework Tightrope: The Build-Your-Own Adventure
 
 Micro frameworks offer minimalism and flexibility, but this freedom isn't free:
 
@@ -60,7 +60,7 @@ What if there was a way to get the best of all worlds? A solution that offers:
 
 This is where our open-source project comes in.
 
-By leveraging the [Axum framework](https://github.com/tokio-rs/axum) in Rust and implementing clean architecture principles, we've created a scaffold that addresses these common pain points. It offers a balanced approach that we believe can revolutionize how you build web applications.
+By leveraging the [Axum](https://github.com/tokio-rs/axum) framework in Rust and implementing clean architecture principles, we've created a scaffold that addresses these common pain points. It offers a balanced approach that we believe can revolutionize how you build web applications.
 
 In the following sections, we'll explore how this scaffold provides a robust foundation for building high-performance, maintainable, and scalable web applications, all while keeping developers happy and productive. No magic wands required – just solid engineering and thoughtful design.
 
@@ -68,7 +68,7 @@ In the following sections, we'll explore how this scaffold provides a robust fou
 
 In the ever-evolving landscape of web development, architectural patterns play a crucial role in creating maintainable, scalable, and robust applications. [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, stands out as a powerful approach to organizing code in a way that maximizes modularity and separation of concerns, especially compared with traditional over-engineered MVC architectures.
 
-> From my personal perspective, MVC may be good for developing user interfaces, but they are not appropriate (or even harmful) for developing web applications intrinsically. It often degenerates into a mess due to so-called "fat models".
+> From my personal perspective, MVC architectures may be good for developing user interfaces, but they are not appropriate (or even harmful) for developing web applications intrinsically. The codebase often degenerates into a mess due to so-called "fat models".
 
 ### Understanding Clean Architecture
 
@@ -82,7 +82,9 @@ At its core, Clean Architecture is built on a set of principles that promote:
 
 These principles are typically represented in concentric circles, with the innermost circles representing the core business logic, and the outer circles representing interfaces and frameworks.
 
-Clean Architecture in web development emphasizes separation of concerns and modularity. It decouples business logic from frameworks, databases, and UI (in this context, API endpoints). This approach enhances testability, flexibility, and maintainability. In our implementation, we structure the application in layers: domain models, core business logic, interface adapters, and external interfaces.
+Clean Architecture in web development emphasizes separation of concerns and modularity. It decouples business logic from frameworks, databases, and UI (in this context, API endpoints). This approach enhances testability, flexibility, and maintainability.
+
+In our implementation, we structure the application in layers: domain models, core business logic, API routers, and external interfaces such as [Utoipa](https://github.com/juhaku/utoipa) OpenAPI documentation (Swagger UI/Scalar) and an optional [shuttle](https://github.com/shuttle-hq/shuttle/) runtime.
 
 ### Implementing Clean Architecture
 
@@ -90,11 +92,11 @@ Our project brings these principles to life in the context of Rust and the Axum 
 
 1. **Domain Models Layer**: At the core, we have our domain models, implemented using [SeaORM](https://github.com/SeaQL/sea-orm). These represent our business entities and are completely independent of any database or framework specifics.
 
-2. **Use Cases / Application Services**: This layer contains our application-specific business rules. In our project, this is represented by the `app::services` module, which handles CRUD operations and other business logic.
+2. **Application Services**: This layer contains our application-specific business rules. In our project, this is represented by the `app::services` module, which handles CRUD operations and other business logic.
 
-3. **Interface Adapters**: This layer adapts data from the format most convenient for use cases and entities, to the format most convenient for some external agency such as a database or the web. In our project, this includes our API models and database-related logic.
+3. **Interface Adapters**: This layer adapts data from the format most convenient for use cases and entities, to the format most convenient for some external agency such as a database or the web. In our project, this includes our API routers and dedicated API models such as JSON error responses.
 
-4. **Frameworks and Drivers**: The outermost layer, consisting of frameworks and tools such as Axum, SeaORM, and Utoipa. Our project is structured in a way that these can be swapped out with minimal impact on the inner layers.
+4. **Frameworks and Drivers**: The outermost layer, consisting of frameworks and tools such as Axum, Utoipa and tokio/shuttle runtime. Our project is structured in a way that these can be swapped out with minimal impact on the inner layers.
 
 ### Benefits in Rust Web Development
 
@@ -152,7 +154,7 @@ async fn users_get(
 
 ### OpenAPI Documentation
 
-The project leverages [Utoipa](https://github.com/juhaku/utoipa) for comprehensive API documentation:
+The project leverages Utoipa for comprehensive API documentation:
 
 - Integrates with Utoipa using derive macros like `ToSchema` and `IntoParams`.
 - Provides Swagger UI/Scalar for interactive API exploration.
@@ -189,8 +191,8 @@ pub async fn search_users(db: &DbConn, query: UserQuery) -> Result<Vec<user::Mod
 
 At the core, we have domain models representing business entities.
 
-- **SeaORM Models**: Utilizes SeaORM for defining and working with domain models.
-- **Input Parameters, Queries, and Output Schemas**: Separate structures for input validation, querying, and API responses.
+- **SeaORM Models**: For defining and working with domain models.
+- **Input Parameters, Queries, and Output Schemas**: For input validation, querying, and API responses. These models are ORM library agnostic.
 
 ```rust
 // Domain Model
@@ -290,11 +292,6 @@ By following this pattern, new features naturally align with clean architecture 
 ## Testing Philosophy
 
 We've adopted a comprehensive testing strategy that aligns with our clean architecture principles. Our approach emphasizes the separation of concerns not just in the application code, but also in our test suite. This philosophy ensures that our tests are as modular and maintainable as the code they're verifying.
-
-Our testing strategy mirrors our Clean Architecture principles:
-
-1. **API Integration Tests**: Verify endpoint behavior and HTTP handling.
-2. **Service Unit Tests**: Focus on isolated business logic components.
 
 We maintain a test structure that parallels our main project, facilitating easy navigation and encouraging comprehensive test coverage. Our approach includes isolated test environments, asynchronous testing, and easy CI/CD integration, ensuring robust quality assurance as the project evolves.
 
@@ -450,4 +447,6 @@ By leveraging Rust's performance and safety, Axum's efficiency, and the principl
 
 5. **Speeds Up Development**: While not as instant as some dynamically-typed frameworks, our approach is still simple enough to accelerate development as projects grow in complexity.
 
-This approach demonstrates that with careful design, we can achieve performance, safety, and clean code simultaneously in web development. We believe our Clean Architecture approach with Rust and Axum offers a compelling solution to common web development challenges. You are invited to explore, build with, and contribute to this evolving project on [GitHub](https://github.com/kigawas/clean-axum).
+This approach demonstrates that with careful design, we can achieve performance, safety, and clean code simultaneously in web development. We believe our Clean Architecture approach with Rust and Axum offers a compelling solution to common web development challenges.
+
+You are invited to explore, build with, and contribute to this evolving project on [GitHub](https://github.com/kigawas/clean-axum).
