@@ -29,6 +29,7 @@
     "Rustacean",
     "sanic",
     "secp256k1",
+    "serde",
     "sqlalchemy",
     "struct",
     "unfancy",
