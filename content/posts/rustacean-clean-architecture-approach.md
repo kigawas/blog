@@ -37,7 +37,7 @@ Micro frameworks offer minimalism and flexibility, but this freedom isn't free:
 - **Architectural Pitfalls**: Without guardrails, it's easy to end up with code that resembles a tangled mess.
 - **Integration Overhead**: Manually integrating libraries can be time-consuming and error-prone.
 
-### The Language Dispute: Static vs. Dynamic
+### The Language Quandary: Static vs. Dynamic
 
 Choosing a programming language adds another layer of complexity:
 
