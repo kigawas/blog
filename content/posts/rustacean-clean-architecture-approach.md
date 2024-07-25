@@ -9,37 +9,37 @@ showFullContent = false
 
 ## Introduction
 
-Disclaimer: This article is partly made with Claude.
+Disclaimer: This article is partly generated with Claude and revamped with GPT-4o mini.
 
 TL;DR: <https://github.com/kigawas/clean-axum>
 
-### The Web Development Framework Dilemma: Navigating Trade-offs in Modern Development
+### The Web Development Framework Dilemma
 
 In the dynamic world of web development, choosing the right language and framework often feels like solving a Rubik's cube blindfolded. As developers, we frequently find ourselves balancing competing priorities: performance vs. development speed, flexibility vs. structure, scalability vs. ease of use.
 
-Choosing a web development framework presents a multifaceted challenge. Developers must balance performance, development speed, flexibility, structure, and scalability. This dilemma often leads to compromises, but what if there was a way to optimize for all these factors?
+Selecting a web development framework is a multifaceted challenge. Developers must balance performance, development speed, flexibility, structure, and scalability. This dilemma often leads to compromises. But what if there were a way to optimize for all these factors?
 
 As you'll see later, our proposed solution aims to mitigate these issues while retaining the benefits of a structured approach.
 
-### The full Stack Framework Conundrum: The All-You-Can-Eat Buffet
+### The full Stack Framework Conundrum
 
-Full stack frameworks offer a tempting proposition: a complete solution promising rapid development. However, this convenience comes with caveats:
+Full stack frameworks offer a tempting proposition: a complete solution promising rapid development. However, this convenience comes with certain caveats:
 
 - **Opinionated Architecture**: Great for quick starts, but potentially constraining for custom requirements.
 - **Performance Overhead**: Convenience often translates to additional layers, which can impact performance.
 - **Steep Learning Curve**: Mastering these frameworks can be time-consuming, potentially offsetting initial productivity gains.
 
-### The Micro Framework Tightrope: The Build-Your-Own Adventure
+### The Micro Framework Tightrope
 
 Micro frameworks offer minimalism and flexibility, but this freedom isn't free:
 
 - **Bare-bones Structure**: Lack of prescribed architecture can lead to inconsistent organization.
-- **Architectural Pitfalls**: Without guardrails, it's easy to end up with code that resembles a plate of spaghetti (and not the delicious kind).
+- **Architectural Pitfalls**: Without guardrails, it's easy to end up with code that resembles a tangled mess.
 - **Integration Overhead**: Manually integrating libraries can be time-consuming and error-prone.
 
-### The Language Dilemma: Static vs. Dynamic
+### The Language Quandary: Static vs. Dynamic
 
-The choice of programming language adds another layer of complexity:
+Choosing a programming language adds another layer of complexity:
 
 - **Static Languages (e.g., C++, Java, Rust)**:
   - Pros: Strong type safety, excellent performance, and scalability.
@@ -64,13 +64,13 @@ By leveraging the [Axum](https://github.com/tokio-rs/axum) framework in Rust and
 
 In the following sections, we'll explore how this scaffold provides a robust foundation for building high-performance, maintainable, and scalable web applications, all while keeping developers happy and productive. No magic wands required – just solid engineering and thoughtful design.
 
-## Clean Architecture in the Context of Axum
+## Clean Architecture in Axum
 
-In the ever-evolving landscape of web development, architectural patterns play a crucial role in creating maintainable, scalable, and robust applications. [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, stands out as a powerful approach to organizing code in a way that maximizes modularity and separation of concerns, especially compared with traditional over-engineered MVC architectures.
+In the ever-evolving landscape of web development, architectural patterns are essential for building maintainable, scalable, and robust applications. [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, stands out as a powerful approach to organizing code in a way that maximizes modularity and separation of concerns, especially compared with traditional over-engineered MVC architectures.
 
-> From my personal perspective, MVC architectures may be good for developing user interfaces, but they are not appropriate (or even harmful) for developing web applications intrinsically. The codebase often degenerates into a mess due to so-called "fat models".
+> From my personal perspective, while MVC architectures may be suitable for developing user interfaces, they can be intrinsically detrimental when applied to web applications. The codebase often degenerates into a mess due to so-called "fat models".
 
-### Understanding Clean Architecture
+### Core Principles of Clean Architecture
 
 At its core, Clean Architecture is built on a set of principles that promote:
 
@@ -80,11 +80,11 @@ At its core, Clean Architecture is built on a set of principles that promote:
 4. **Independence of Database**: Business rules are not bound to the database.
 5. **Independence of any external agency**: Business rules simply don't know anything about the outside world.
 
-These principles are typically represented in concentric circles, with the innermost circles representing the core business logic, and the outer circles representing interfaces and frameworks.
+These principles are typically illustrated in concentric circles, with the innermost circles representing the core business logic, and the outer circles representing interfaces and frameworks.
 
 Clean Architecture in web development emphasizes separation of concerns and modularity. It decouples business logic from frameworks, databases, and UI (in this context, API endpoints). This approach enhances testability, flexibility, and maintainability.
 
-In our implementation, we structure the application in layers: domain models, core business logic, API routers, and external interfaces such as [Utoipa](https://github.com/juhaku/utoipa) OpenAPI documentation (Swagger UI/Scalar) and an optional [shuttle](https://github.com/shuttle-hq/shuttle/) runtime.
+In our implementation, we structure the application into layers: domain models, core business logic, API routers, and external interfaces. These include [Utoipa](https://github.com/juhaku/utoipa) for OpenAPI documentation (Swagger UI/Scalar) and an optional [shuttle](https://github.com/shuttle-hq/shuttle/) runtime.
 
 ### Implementing Clean Architecture
 
@@ -92,13 +92,13 @@ Our project brings these principles to life in the context of Rust and the Axum 
 
 1. **Domain Models Layer**: At the core, we have our domain models, implemented using [SeaORM](https://github.com/SeaQL/sea-orm). These represent our business entities and are completely independent of any database or framework specifics.
 
-2. **Application Services**: This layer contains our application-specific business rules. In our project, this is represented by the `app::services` module, which handles CRUD operations and other business logic.
+2. **Application Services**: This layer defines our application-specific business rules. In our project, this is represented by the `app::services` module, which handles CRUD operations and other business logic.
 
 3. **Interface Adapters**: This layer adapts data from the format most convenient for use cases and entities, to the format most convenient for some external agency such as a database or the web. In our project, this includes our API routers and dedicated API models such as JSON error responses.
 
 4. **Frameworks and Drivers**: The outermost layer, consisting of frameworks and tools such as Axum, Utoipa and tokio/shuttle runtime. Our project is structured in a way that these can be swapped out with minimal impact on the inner layers.
 
-### Benefits in Rust Web Development
+### Benefits of Clean Architecture in Rust Web Development
 
 Implementing Clean Architecture in a Rust web application using Axum offers several key benefits:
 
@@ -106,7 +106,7 @@ Implementing Clean Architecture in a Rust web application using Axum offers seve
 
 2. **Testability**: With business logic separated from frameworks, unit testing becomes straightforward and more effective.
 
-3. **Framework Independence**: While we're using Axum, the core business logic is framework-agnostic, allowing for easier transitions if needed.
+3. **Framework Independence**: While we are using Axum, the core business logic is framework-agnostic, facilitating transitions to other frameworks if necessary.
 
 4. **Database Flexibility**: The separation of domain models from database specifics allows for easier database migrations or even complete database technology changes.
 
@@ -114,7 +114,7 @@ Implementing Clean Architecture in a Rust web application using Axum offers seve
 
 6. **Rust's Safety**: Combining Clean Architecture with Rust's strong type system and ownership model results in exceptionally robust and safe applications.
 
-By adhering to Clean Architecture principles, our project provides a solid foundation for building complex web applications that are easier to maintain, test, and evolve over time. In the following sections, we'll dive deeper into how these principles are implemented in the project structure and key features.
+By adhering to Clean Architecture principles, our project provides a solid foundation for building complex web applications that are easy to maintain, test, and evolve. In the following sections, we'll dive deeper into how these principles are implemented in the project structure and key features.
 
 ## Project Structure and Key Features
 
@@ -237,14 +237,14 @@ impl From<user::Model> for UserSchema {
 }
 ```
 
-### Key Features
+### Key Features of the Project
 
 - **Separation of Concerns**: Clear separation between API, database logic, and domain models.
 - **Input Validation**: Automatic validation using the `Validate` derive macro and `Valid` extractor.
 - **OpenAPI Integration**: Seamless integration with OpenAPI using derive macros.
 - **Flexible Database Operations**: Use of SeaORM's `ActiveModel` for flexible database interactions.
 
-## Clean Architecture Implementation Details
+## Clean Architecture Implementation
 
 Our project embodies clean architecture principles in its very structure. Let's explore how this is achieved.
 
@@ -257,7 +257,7 @@ The project maintains a clear distinction between API handlers and Application s
 
 This separation ensures that changes to the API layer don't directly impact the database layer and vice versa.
 
-### Framework and Database Replaceability
+### Framework and Database Flexibility
 
 The project structure facilitates the replacement of key components:
 
@@ -295,7 +295,7 @@ We've adopted a comprehensive testing strategy that aligns with our clean archit
 
 We maintain a test structure that parallels our main project, facilitating easy navigation and encouraging comprehensive test coverage. Our approach includes isolated test environments, asynchronous testing, and easy CI/CD integration, ensuring robust quality assurance as the project evolves.
 
-### Separation of Test Types
+### Types of Tests
 
 We maintain a clear distinction between two primary types of tests:
 
@@ -399,15 +399,15 @@ While specific benchmarks would depend on use cases, our approach is production-
 
 Let's explore some key performance aspects of our approach.
 
-### Rust's Inherent Performance
+### Rust's Performance Advantages
 
 By choosing Rust, we're already starting on a strong footing. Rust's zero-cost abstractions, compile-time checks, and lack of a garbage collector contribute to excellent runtime performance. This is particularly beneficial for web services that need to handle high concurrency and low latency.
 
-### Axum's Efficiency
+### Efficiency of Axum
 
 Axum, built on top of hyper and tokio, is designed for high performance. Its tower-based middleware approach and efficient routing contribute to minimal overhead. Our project leverages these strengths, ensuring that the architectural benefits don't come at the cost of speed.
 
-### Database Optimization
+### Optimizing Database Operations
 
 While our project uses SeaORM for database operations, the clean architecture allows for easy optimization:
 
@@ -431,7 +431,7 @@ While performance optimizations can always be made, our project provides a sweet
 
 ## Conclusion
 
-As we wrap up our journey through our project, let's reflect on how it addresses the web development framework dilemma we started with.
+As we conclude our discussion, let's reflect on how this project addresses the web development framework dilemma we began with.
 
 Remember the tug-of-war between full-stack frameworks and micro-frameworks? The struggle to balance development speed, performance, and maintainability? Our project offers a compelling solution to these challenges.
 
