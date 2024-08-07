@@ -17,11 +17,11 @@ TL;DR: <https://github.com/kigawas/clean-axum>
 
 In the dynamic world of web development, choosing the right language and framework often feels like solving a Rubik's cube blindfolded. As developers, we frequently find ourselves balancing competing priorities: performance vs. development speed, flexibility vs. structure, scalability vs. ease of use.
 
-Selecting a web development framework is a multifaceted challenge. Developers must balance performance, development speed, flexibility, structure, and scalability. This dilemma often leads to compromises. But what if there were a way to optimize for all these factors?
+Selecting a web development framework is a multifaceted challenge, whose dilemma often leads to compromises. But what if there were a way to optimize for all these factors?
 
 As you'll see later, our proposed solution aims to mitigate these issues while retaining the benefits of a structured approach.
 
-### The full Stack Framework Conundrum
+### The Full Stack Framework Conundrum
 
 Full stack frameworks offer a tempting proposition: a complete solution promising rapid development. However, this convenience comes with certain caveats:
 
@@ -92,7 +92,7 @@ Our project brings these principles to life in the context of Rust and the Axum 
 
 1. **Domain Models Layer**: At the core, we have our domain models, implemented using [SeaORM](https://github.com/SeaQL/sea-orm). These represent our business entities and are completely independent of any database or framework specifics.
 
-2. **Application Services**: This layer defines our application-specific business rules. In our project, this is represented by the `app::services` module, which handles CRUD operations and other business logic.
+2. **Persistence Layer**: This layer defines our application-specific business rules. In our project, this is represented by the `app::persistence` module, which handles CRUD operations mainly.
 
 3. **Interface Adapters**: This layer adapts data from the format most convenient for use cases and entities, to the format most convenient for some external agency such as a database or the web. In our project, this includes our API routers and dedicated API models such as JSON error responses.
 
@@ -159,12 +159,9 @@ The project leverages Utoipa for comprehensive API documentation:
 - Integrates with Utoipa using derive macros like `ToSchema` and `IntoParams`.
 - Provides Swagger UI/Scalar for interactive API exploration.
 
-### Database Logic Layer
+### Persistence Layer
 
 This layer encapsulates all database-related operations, maintaining separation from the web framework.
-
-- **Services**: Implements CRUD operations and other database manipulations.
-- **Framework-Agnostic Design**: Database logic is independent of the web framework.
 
 ```rust
 pub async fn create_user(
@@ -250,10 +247,10 @@ Our project embodies clean architecture principles in its very structure. Let's 
 
 ### Separation of API and DB Logic
 
-The project maintains a clear distinction between API handlers and Application services:
+The project maintains a clear distinction between API handlers and persistence layer:
 
 - API handlers (`api::routers`) handle HTTP-related logic and input/output transformations.
-- Application services (`app::services`) encapsulate all database operations.
+- Persistence layer (`app::persistence`) encapsulates all database operations.
 
 This separation ensures that changes to the API layer don't directly impact the database layer and vice versa.
 
@@ -283,7 +280,7 @@ The project structure naturally enforces clean architecture principles:
 When extending the scaffold, developers are guided to maintain architectural boundaries:
 
 1. Add new domain models to the `models` module.
-2. Implement business logic in the `app::services` module.
+2. Implement business logic in the `app::persistence` module.
 3. Create new API endpoints in the `api::routers` module.
 4. Update the `doc` module to include new OpenAPI models.
 
@@ -301,7 +298,7 @@ We maintain a clear distinction between two primary types of tests:
 
 1. **API Integration Tests**: These tests verify the behavior of our API endpoints, ensuring that our application correctly handles HTTP requests and responses.
 
-2. **App Service Unit Tests**: These tests focus on the individual components of our business logic, verifying that our services function correctly in isolation.
+2. **Persistence Unit Tests**: These tests focus on the individual components of our business logic, verifying that DB operations function correctly in isolation.
 
 This separation allows us to pinpoint issues more accurately and maintain a clear understanding of where potential problems may lie.
 
@@ -310,7 +307,7 @@ This separation allows us to pinpoint issues more accurately and maintain a clea
 One of the key principles of our testing philosophy is to maintain a test folder hierarchy that mirrors our main project structure. Specifically:
 
 - API tests follow the structure of `api::routers`
-- App service tests follow the structure of `app::services`
+- Persistence tests follow the structure of `app::persistence`
 
 This approach offers several benefits:
 
@@ -348,18 +345,16 @@ pub(super) async fn test_post_users(app: Router) {
 // ... other test functions ...
 ```
 
-#### App Service Unit Tests
+#### Persistence Layer Unit Tests
 
 ```rust
-// tests/app/mod.rs
 #[tokio::test]
-async fn main() -> Result<(), DbErr> {
+async fn user_main() -> Result<(), DbErr> {
     let db = setup_test_db("sqlite::memory:").await?;
     test_user(&db).await?;
     Ok(())
 }
 
-// tests/app/user.rs
 pub(super) async fn test_user(db: &DatabaseConnection) -> Result<(), DbErr> {
     let params = CreateUserParams {
         username: "test".to_string(),
@@ -411,7 +406,7 @@ Axum, built on top of hyper and tokio, is designed for high performance. Its tow
 
 While our project uses SeaORM for database operations, the clean architecture allows for easy optimization:
 
-1. **Query Optimization**: The separation of database logic in the `app::services` module allows for fine-tuning of database queries without affecting the rest of the application.
+1. **Query Optimization**: The separation of database logic in the `app::persistence` module allows for fine-tuning of database queries without affecting the rest of the application.
 
 2. **Connection Pooling Configuration**: We can adjust connection pooling parameters to maximize performance on our specific dedicated servers, whether on-premises or in the cloud.
 
