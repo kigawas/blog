@@ -17,7 +17,7 @@ TL;DR: <https://github.com/kigawas/clean-axum>
 
 In the dynamic world of web development, choosing the right language and framework often feels like solving a Rubik's cube blindfolded. As developers, we frequently find ourselves balancing competing priorities: performance vs. development speed, flexibility vs. structure, scalability vs. ease of use.
 
-Selecting a web development framework is a multifaceted challenge, the dilemma often leads to compromises. But what if there were a way to optimize for all these factors?
+Selecting a web development framework is a multifaceted challenge, whose dilemma often leads to compromises. But what if there were a way to optimize for all these factors?
 
 As you'll see later, our proposed solution aims to mitigate these issues while retaining the benefits of a structured approach.
 
