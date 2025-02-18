@@ -91,7 +91,8 @@ async def create_async_file_response(
     headers: dict = {
         "Content-Length": content_length,
     }
-    if content_disposition := content_disposition_header(as_attachment, filename):
+    basename = os.path.basename(filename)  # hide the full path
+    if content_disposition := content_disposition_header(as_attachment, basename):
         headers["Content-Disposition"] = content_disposition
 
     return StreamingHttpResponse(
@@ -108,6 +109,7 @@ Notable features:
 - Supports optional [`Content-Disposition`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) attachment downloads
 - Allows configurable chunk sizes
 - Sets appropriate response headers
+- Only returns the base name of the file, without revealing the full path
 
 ### 4. The File Iterator
 
