@@ -1,4 +1,3 @@
-
 +++
 title = "A Rustacean Clean Architecture Approach to Web Development"
 date = "2024-07-21"
@@ -8,35 +7,29 @@ description = "A clean approach to solve pain points in web development, not jus
 showFullContent = false
 +++
 
-## Introduction
+## The Problem with MVC
 
-TL;DR: <https://github.com/kigawas/clean-axum>
+Most web frameworks — Django, Rails, Laravel — follow MVC patterns that degenerate over time. Business logic creeps into models, validation sprawls across controllers, and what began as separation of concerns becomes separation in name only.
 
-### The Problem with MVC
+> While MVC architectures may be suitable for developing user interfaces, they can be intrinsically detrimental when applied to web applications. The codebase often degenerates into a mess due to so-called "fat models".
 
-Most web frameworks — Django, Rails, Laravel — follow MVC patterns that degenerate over time. Business logic creeps into models, controllers balloon with validation, and the codebase becomes a tangle where everything depends on everything.
+Full-stack frameworks trade flexibility for velocity; micro-frameworks trade structure for freedom. Neither trade is necessary.
 
-Full-stack frameworks offer rapid starts but impose opinionated structures that constrain you later. Micro-frameworks offer freedom but no guardrails, leading to inconsistent architecture. And the language choice adds tension: static languages give you safety and performance at the cost of velocity; dynamic languages give you speed at the cost of runtime surprises.
-
-What if you could get structure without rigidity, performance without sacrificing development speed?
-
-That's what [clean-axum](https://github.com/kigawas/clean-axum) aims to provide: a Rust scaffold built on [Axum](https://github.com/tokio-rs/axum) that applies Clean Architecture principles to web development.
+That's what [clean-axum](https://github.com/kigawas/clean-axum) aims to provide: a Rust scaffold built on [Axum](https://github.com/tokio-rs/axum) that applies Clean Architecture principles to web development. See the full source: <https://github.com/kigawas/clean-axum>
 
 ## Clean Architecture in Axum
 
-[Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, organizes code around one fundamental rule:
+[Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, organizes code around one principle that is simple to state and demanding to follow:
 
 > **Dependencies flow inward.** Outer layers depend on inner layers. Inner layers know nothing about the outside world.
 
 In practice, this means:
 
 - **Domain models** define data structures with no knowledge of databases, frameworks, or HTTP.
-- **Persistence** handles all business logic and database operations, depending only on models.
+- **Persistence** handles database operations and application logic, depending only on models.
 - **API routers** translate HTTP into persistence calls, depending on both layers above.
 
 This naturally produces independence from frameworks, databases, and external interfaces — making each layer testable and replaceable in isolation.
-
-> From my personal perspective, while MVC architectures may be suitable for developing user interfaces, they can be intrinsically detrimental when applied to web applications. The codebase often degenerates into a mess due to so-called "fat models".
 
 ### How the Layers Map to Code
 
@@ -44,21 +37,16 @@ This naturally produces independence from frameworks, databases, and external in
 ┌─────────────────────────────────────────────┐
 │  api/routers/       HTTP plumbing (thin)     │
 ├─────────────────────────────────────────────┤
-│  app/persistence/   Business logic (thick)   │
+│  app/persistence/   Application logic (thick) │
 ├─────────────────────────────────────────────┤
 │  models/            Data definitions (slim)  │
 │    domains/  params/  schemas/  queries/     │
 └─────────────────────────────────────────────┘
 ```
 
-- `models/` depends on nothing. It contains domain entities, input parameters, output schemas, and query filters.
-- `app/` depends on `models/`. All CRUD operations and business rules live in `app::persistence`.
-- `api/` depends on `app/` and `models/`. Routers are thin — they parse HTTP and delegate to persistence.
-- `doc/` depends on `api/` and `models/`. It contains [Utoipa](https://github.com/juhaku/utoipa) OpenAPI models for Swagger UI/Scalar.
+The `doc/` layer (not shown) depends on `api/` and `models/`, providing [Utoipa](https://github.com/juhaku/utoipa) OpenAPI models for Swagger UI/Scalar.
 
-## Project Structure and Key Features
-
-### Domain Models Layer
+## Domain Models Layer
 
 At the core, domain models represent business entities. Input parameters, queries, and output schemas are separate structs — all ORM-agnostic except for the entity definitions themselves.
 
@@ -107,9 +95,9 @@ impl From<user::Model> for UserSchema {
 
 Only the domain model struct uses [SeaORM](https://github.com/SeaQL/sea-orm) derives. Everything else — params, queries, schemas — is plain Rust with `serde`, `validator`, and `utoipa`. This containment is deliberate: ORM coupling exists, but it's confined to one place.
 
-### Persistence Layer
+## Persistence Layer
 
-This is where you'll spend most of your time. All database operations and business rules live here, separated from HTTP concerns.
+This is where the real work happens. In a textbook Clean Architecture, business rules and data access occupy separate layers. In practice, for a web CRUD application, combining them in `app::persistence` avoids over-engineering — the important boundary is between this layer and HTTP.
 
 ```rust
 pub async fn create_user(
@@ -134,9 +122,9 @@ pub async fn search_users(db: &DbConn, query: UserQuery) -> Result<Vec<user::Mod
 
 Because persistence functions take a `DbConn` and return domain types, they're straightforward to test with an in-memory database — no HTTP server needed.
 
-### API Logic Layer
+## API Logic Layer
 
-Routers translate HTTP into persistence calls. They should be boring — if a router function exceeds a few lines, logic is leaking into the wrong layer.
+Routers translate HTTP into persistence calls. They should contain no logic worth remarking on — if a router function grows beyond a few lines, something belongs in a different layer.
 
 ```rust
 async fn users_post(
@@ -168,9 +156,9 @@ Key features at this layer:
 - **Error Handling**: [Anyhow](https://github.com/dtolnay/anyhow)-based `ApiError` provides consistent JSON error responses.
 - **OpenAPI Integration**: Utoipa derive macros generate interactive Swagger UI/Scalar documentation.
 
-### What "Replaceable" Actually Means
+## What "Replaceable" Actually Means
 
-The database **engine** is replaceable — SQLite for tests, Postgres for production, no code changes. The ORM is not — `models/domains/` uses SeaORM derives, and `app::persistence/` uses SeaORM's query API. But that's the right trade-off: you get type-safe queries and migrations in exchange for coupling to one ORM. The coupling is contained to two directories; everything else is plain Rust structs.
+The database **engine** is replaceable; the ORM is not. SQLite for tests, Postgres for production — no code changes. But `models/domains/` uses SeaORM derives, and `app::persistence/` uses SeaORM's query API. This is a trade-off, not a compromise: you get type-safe queries and migrations in exchange for coupling to one ORM. The coupling is contained to two directories; everything else is plain Rust structs.
 
 The web framework is similarly contained. Swap Axum for Actix — you rewrite `api/routers/` and nothing else changes. The persistence layer doesn't know HTTP exists.
 
@@ -245,11 +233,11 @@ Every feature follows the same four steps:
 3. **Write tests** — Cover the persistence layer thoroughly; add an integration test for wiring.
 4. **`api/routers/`** — Wire it to HTTP. Update `doc/` for OpenAPI.
 
-Step 4 should take minutes. If it takes longer, logic is leaking into the wrong layer.
+Step 4 should take minutes. If it takes longer, logic is leaking into the wrong layer. This consistent sequence is the payoff of the dependency rule: each layer has a clear, predictable role.
 
 ## Conclusion
 
-Clean Architecture isn't about following a concentric circles diagram. It's about one rule: **dependencies flow inward**. Structure your code so that models know nothing about persistence, persistence knows nothing about HTTP, and the result is a codebase where every layer can be tested, replaced, and reasoned about independently.
+Clean Architecture isn't about following a concentric circles diagram. It's about one rule: **dependencies flow inward**. Structure your code so that models know nothing of persistence, persistence knows nothing of HTTP, and each layer stands as though the others did not exist.
 
 By combining this principle with Rust's type safety and Axum's efficiency, [clean-axum](https://github.com/kigawas/clean-axum) provides a scaffold that is structured without being rigid, performant without sacrificing clarity, and maintainable as complexity grows.
 
