@@ -1,5 +1,5 @@
 +++
-title = "Bridging the Gap: A Rustacean Clean Architecture Approach to Web Development"
+title = "A Rustacean Clean Architecture Approach to Web Development"
 date = "2024-07-21"
 cover = ""
 tags = ["Rust", "web", "Clean Architecture", "Axum"]
@@ -7,126 +7,124 @@ description = "A clean approach to solve pain points in web development, not jus
 showFullContent = false
 +++
 
-## Introduction
+## The Problem with MVC
 
-Disclaimer: This article is partly generated with Claude and revamped with GPT-4o mini.
+Most web frameworks — Django, Rails, Laravel — follow MVC patterns that degenerate over time. Business logic creeps into models, validation sprawls across controllers, and what began as separation of concerns becomes separation in name only.
 
-TL;DR: <https://github.com/kigawas/clean-axum>
+> While MVC architectures may be suitable for developing user interfaces, they can be intrinsically detrimental when applied to web applications. The codebase often degenerates into a mess due to so-called "fat models".
 
-### The Web Development Framework Dilemma
+Full-stack frameworks trade flexibility for velocity; micro-frameworks trade structure for freedom. Neither trade is necessary.
 
-In the dynamic world of web development, choosing the right language and framework often feels like solving a Rubik's cube blindfolded. As developers, we frequently find ourselves balancing competing priorities: performance vs. development speed, flexibility vs. structure, scalability vs. ease of use.
-
-Selecting a web development framework is a multifaceted challenge, whose dilemma often leads to compromises. But what if there were a way to optimize for all these factors?
-
-As you'll see later, our proposed solution aims to mitigate these issues while retaining the benefits of a structured approach.
-
-### The Full Stack Framework Conundrum
-
-Full stack frameworks offer a tempting proposition: a complete solution promising rapid development. However, this convenience comes with certain caveats:
-
-- **Opinionated Architecture**: Great for quick starts, but potentially constraining for custom requirements.
-- **Performance Overhead**: Convenience often translates to additional layers, which can impact performance.
-- **Steep Learning Curve**: Mastering these frameworks can be time-consuming, potentially offsetting initial productivity gains.
-
-### The Micro Framework Tightrope
-
-Micro frameworks offer minimalism and flexibility, but this freedom isn't free:
-
-- **Bare-bones Structure**: Lack of prescribed architecture can lead to inconsistent organization.
-- **Architectural Pitfalls**: Without guardrails, it's easy to end up with code that resembles a tangled mess.
-- **Integration Overhead**: Manually integrating libraries can be time-consuming and error-prone.
-
-### The Language Quandary: Static vs. Dynamic
-
-Choosing a programming language adds another layer of complexity:
-
-- **Static Languages (e.g., C++, Java, Rust)**:
-  - Pros: Strong type safety, excellent performance, and scalability.
-  - Cons: Potentially slower development speed, steeper learning curve.
-
-- **Dynamic Languages (e.g., Python, JavaScript)**:
-  - Pros: Rapid development, easier to learn and prototype.
-  - Cons: Potential performance issues, higher costs at scale, and runtime surprises.
-
-### Seeking the Goldilocks Solution
-
-What if there was a way to get the best of all worlds? A solution that offers:
-
-- The performance and safety of a static language
-- The development speed typically associated with dynamic languages
-- A structured yet flexible architecture that guides without handcuffing
-- Scalability without requiring a second mortgage for your cloud bills
-
-This is where our open-source project comes in.
-
-By leveraging the [Axum](https://github.com/tokio-rs/axum) framework in Rust and implementing clean architecture principles, we've created a scaffold that addresses these common pain points. It offers a balanced approach that we believe can revolutionize how you build web applications.
-
-In the following sections, we'll explore how this scaffold provides a robust foundation for building high-performance, maintainable, and scalable web applications, all while keeping developers happy and productive. No magic wands required – just solid engineering and thoughtful design.
+That's what [clean-axum](https://github.com/kigawas/clean-axum) aims to provide: a Rust scaffold built on [Axum](https://github.com/tokio-rs/axum) that applies Clean Architecture principles to web development. See the full source: <https://github.com/kigawas/clean-axum>
 
 ## Clean Architecture in Axum
 
-In the ever-evolving landscape of web development, architectural patterns are essential for building maintainable, scalable, and robust applications. [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, stands out as a powerful approach to organizing code in a way that maximizes modularity and separation of concerns, especially compared with traditional over-engineered MVC architectures.
+[Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), popularized by Robert C. Martin, organizes code around one principle that is simple to state and demanding to follow:
 
-> From my personal perspective, while MVC architectures may be suitable for developing user interfaces, they can be intrinsically detrimental when applied to web applications. The codebase often degenerates into a mess due to so-called "fat models".
+> **Dependencies flow inward.** Outer layers depend on inner layers. Inner layers know nothing about the outside world.
 
-### Core Principles of Clean Architecture
+In practice, this means:
 
-At its core, Clean Architecture is built on a set of principles that promote:
+- **Domain models** define data structures with no knowledge of databases, frameworks, or HTTP.
+- **Persistence** handles database operations and application logic, depending only on models.
+- **API routers** translate HTTP into persistence calls, depending on both layers above.
 
-1. **Independence of frameworks**: The architecture doesn't depend on the existence of some library of feature-laden software.
-2. **Testability**: Business rules can be tested without the UI, database, web server, or any external element.
-3. **Independence of UI**: The UI can change easily, without changing the rest of the system.
-4. **Independence of Database**: Business rules are not bound to the database.
-5. **Independence of any external agency**: Business rules simply don't know anything about the outside world.
+This naturally produces independence from frameworks, databases, and external interfaces — making each layer testable and replaceable in isolation.
 
-These principles are typically illustrated in concentric circles, with the innermost circles representing the core business logic, and the outer circles representing interfaces and frameworks.
+### How the Layers Map to Code
 
-Clean Architecture in web development emphasizes separation of concerns and modularity. It decouples business logic from frameworks, databases, and UI (in this context, API endpoints). This approach enhances testability, flexibility, and maintainability.
+```text
+┌─────────────────────────────────────────────┐
+│  api/routers/       HTTP plumbing (thin)     │
+├─────────────────────────────────────────────┤
+│  app/persistence/   Application logic (thick) │
+├─────────────────────────────────────────────┤
+│  models/            Data definitions (slim)  │
+│    domains/  params/  schemas/  queries/     │
+└─────────────────────────────────────────────┘
+```
 
-In our implementation, we structure the application into layers: domain models, core business logic, API routers, and external interfaces. These include [Utoipa](https://github.com/juhaku/utoipa) for OpenAPI documentation (Swagger UI/Scalar) and an optional [shuttle](https://github.com/shuttle-hq/shuttle/) runtime.
+The `doc/` layer (not shown) depends on `api/` and `models/`, providing [Utoipa](https://github.com/juhaku/utoipa) OpenAPI models for Swagger UI/Scalar.
 
-### Implementing Clean Architecture
+## Domain Models Layer
 
-Our project brings these principles to life in the context of Rust and the Axum web framework. Here's how we've structured it to adhere to clean architecture principles:
+At the core, domain models represent business entities. Input parameters, queries, and output schemas are separate structs — all ORM-agnostic except for the entity definitions themselves.
 
-1. **Domain Models Layer**: At the core, we have our domain models, implemented using [SeaORM](https://github.com/SeaQL/sea-orm). These represent our business entities and are completely independent of any database or framework specifics.
+```rust
+// Domain Model (ORM-coupled — this is the only place)
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
+#[sea_orm(table_name = "user")]
+pub struct Model {
+    #[sea_orm(primary_key)]
+    pub id: i32,
+    #[sea_orm(column_type = "Text", unique)]
+    pub username: String,
+}
 
-2. **Persistence Layer**: This layer defines our application-specific business rules. In our project, this is represented by the `app::persistence` module, which handles CRUD operations mainly.
+// Input Parameter (ORM-agnostic)
+#[derive(Deserialize, Validate, ToSchema)]
+pub struct CreateUserParams {
+    #[validate(length(min = 2))]
+    pub username: String,
+}
 
-3. **Interface Adapters**: This layer adapts data from the format most convenient for use cases and entities, to the format most convenient for some external agency such as a database or the web. In our project, this includes our API routers and dedicated API models such as JSON error responses.
+// Query (ORM-agnostic)
+#[derive(Deserialize, Default, IntoParams)]
+#[into_params(style = Form, parameter_in = Query)]
+pub struct UserQuery {
+    #[param(nullable = true)]
+    pub username: String,
+}
 
-4. **Frameworks and Drivers**: The outermost layer, consisting of frameworks and tools such as Axum, Utoipa and tokio/shuttle runtime. Our project is structured in a way that these can be swapped out with minimal impact on the inner layers.
+// Output Schema (ORM-agnostic)
+#[derive(Serialize, ToSchema)]
+pub struct UserSchema {
+    pub id: u32,
+    pub username: String,
+}
 
-### Benefits of Clean Architecture in Rust Web Development
+impl From<user::Model> for UserSchema {
+    fn from(user: user::Model) -> Self {
+        Self {
+            id: user.id as u32,
+            username: user.username,
+        }
+    }
+}
+```
 
-Implementing Clean Architecture in a Rust web application using Axum offers several key benefits:
+Only the domain model struct uses [SeaORM](https://github.com/SeaQL/sea-orm) derives. Everything else — params, queries, schemas — is plain Rust with `serde`, `validator`, and `utoipa`. This containment is deliberate: ORM coupling exists, but it's confined to one place.
 
-1. **Modularity**: The clear separation between layers makes it easier to modify or replace components without affecting the entire system.
+## Persistence Layer
 
-2. **Testability**: With business logic separated from frameworks, unit testing becomes straightforward and more effective.
+This is where the real work happens. In a textbook Clean Architecture, business rules and data access occupy separate layers. In practice, for a web CRUD application, combining them in `app::persistence` avoids over-engineering — the important boundary is between this layer and HTTP.
 
-3. **Framework Independence**: While we are using Axum, the core business logic is framework-agnostic, facilitating transitions to other frameworks if necessary.
+```rust
+pub async fn create_user(
+    db: &DbConn,
+    params: CreateUserParams,
+) -> Result<user::ActiveModel, DbErr> {
+    user::ActiveModel {
+        username: Set(params.username),
+        ..Default::default()
+    }
+    .save(db)
+    .await
+}
 
-4. **Database Flexibility**: The separation of domain models from database specifics allows for easier database migrations or even complete database technology changes.
+pub async fn search_users(db: &DbConn, query: UserQuery) -> Result<Vec<user::Model>, DbErr> {
+    user::Entity::find()
+        .filter(user::Column::Username.contains(query.username))
+        .all(db)
+        .await
+}
+```
 
-5. **Scalability**: Clean Architecture naturally lends itself to microservices architectures, making it easier to scale specific components of your application independently.
+Because persistence functions take a `DbConn` and return domain types, they're straightforward to test with an in-memory database — no HTTP server needed.
 
-6. **Rust's Safety**: Combining Clean Architecture with Rust's strong type system and ownership model results in exceptionally robust and safe applications.
+## API Logic Layer
 
-By adhering to Clean Architecture principles, our project provides a solid foundation for building complex web applications that are easy to maintain, test, and evolve. In the following sections, we'll dive deeper into how these principles are implemented in the project structure and key features.
-
-## Project Structure and Key Features
-
-Our project exemplifies clean architecture principles while harnessing the power of Rust and modern web development tools. Let's explore each layer of the architecture and its key features.
-
-### API Logic Layer
-
-The API logic layer, built with Axum, handles HTTP requests and responses with type-safety and ergonomics.
-
-- **Routers and Endpoints**: Utilizes Axum for defining type-safe API routes.
-- **Input Validation**: Employs the `Valid` extractor for automatic input validation.
-- **Error Handling**: Uses [Anyhow](https://github.com/dtolnay/anyhow)-based custom `ApiError` for consistent error responses.
+Routers translate HTTP into persistence calls. They should contain no logic worth remarking on — if a router function grows beyond a few lines, something belongs in a different layer.
 
 ```rust
 async fn users_post(
@@ -152,200 +150,30 @@ async fn users_get(
 }
 ```
 
-### OpenAPI Documentation
+Key features at this layer:
 
-The project leverages Utoipa for comprehensive API documentation:
+- **Input Validation**: The `Valid` extractor triggers automatic validation via `validator` derives.
+- **Error Handling**: [Anyhow](https://github.com/dtolnay/anyhow)-based `ApiError` provides consistent JSON error responses.
+- **OpenAPI Integration**: Utoipa derive macros generate interactive Swagger UI/Scalar documentation.
 
-- Integrates with Utoipa using derive macros like `ToSchema` and `IntoParams`.
-- Provides Swagger UI/Scalar for interactive API exploration.
+## What "Replaceable" Actually Means
 
-### Persistence Layer
+The database **engine** is replaceable; the ORM is not. SQLite for tests, Postgres for production — no code changes. But `models/domains/` uses SeaORM derives, and `app::persistence/` uses SeaORM's query API. This is a trade-off, not a compromise: you get type-safe queries and migrations in exchange for coupling to one ORM. The coupling is contained to two directories; everything else is plain Rust structs.
 
-This layer encapsulates all database-related operations, maintaining separation from the web framework.
-
-```rust
-pub async fn create_user(
-    db: &DbConn,
-    params: CreateUserParams,
-) -> Result<user::ActiveModel, DbErr> {
-    user::ActiveModel {
-        username: Set(params.username),
-        ..Default::default()
-    }
-    .save(db)
-    .await
-}
-
-pub async fn search_users(db: &DbConn, query: UserQuery) -> Result<Vec<user::Model>, DbErr> {
-    user::Entity::find()
-        .filter(user::Column::Username.contains(query.username))
-        .all(db)
-        .await
-}
-```
-
-### Domain Models Layer
-
-At the core, we have domain models representing business entities.
-
-- **SeaORM Models**: For defining and working with domain models.
-- **Input Parameters, Queries, and Output Schemas**: For input validation, querying, and API responses. These models are ORM library agnostic.
-
-```rust
-// Domain Model
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "user")]
-pub struct Model {
-    #[sea_orm(primary_key)]
-    pub id: i32,
-    #[sea_orm(column_type = "Text", unique)]
-    pub username: String,
-}
-
-// Input Parameter
-#[derive(Deserialize, Validate, ToSchema)]
-pub struct CreateUserParams {
-    #[validate(length(min = 2))]
-    pub username: String,
-}
-
-// Query
-#[derive(Deserialize, Default, IntoParams)]
-#[into_params(style = Form, parameter_in = Query)]
-pub struct UserQuery {
-    #[param(nullable = true)]
-    pub username: String,
-}
-
-// Output Schema
-#[derive(Serialize, ToSchema)]
-pub struct UserSchema {
-    pub id: u32,
-    pub username: String,
-}
-
-impl From<user::Model> for UserSchema {
-    fn from(user: user::Model) -> Self {
-        Self {
-            id: user.id as u32,
-            username: user.username,
-        }
-    }
-}
-```
-
-### Key Features of the Project
-
-- **Separation of Concerns**: Clear separation between API, database logic, and domain models.
-- **Input Validation**: Automatic validation using the `Validate` derive macro and `Valid` extractor.
-- **OpenAPI Integration**: Seamless integration with OpenAPI using derive macros.
-- **Flexible Database Operations**: Use of SeaORM's `ActiveModel` for flexible database interactions.
-
-## Clean Architecture Implementation
-
-Our project embodies clean architecture principles in its very structure. Let's explore how this is achieved.
-
-### Separation of API and DB Logic
-
-The project maintains a clear distinction between API handlers and persistence layer:
-
-- API handlers (`api::routers`) handle HTTP-related logic and input/output transformations.
-- Persistence layer (`app::persistence`) encapsulates all database operations.
-
-This separation ensures that changes to the API layer don't directly impact the database layer and vice versa.
-
-### Framework and Database Flexibility
-
-The project structure facilitates the replacement of key components:
-
-- The API layer uses Axum, but the core business logic is framework-agnostic.
-- While SeaORM is used for database operations, the domain models and business logic are designed to be independent of the specific ORM or database.
-
-### Enforcing Clean Architecture Principles
-
-The project structure naturally enforces clean architecture principles:
-
-- The `models` module contains all domain models, free from external dependencies.
-  - Only dependencies for modelling are allowed:
-    - `serde` for JSON serialization/deserialization
-    - `SeaORM` for domain models
-    - `validator` for input validation
-    - `utoipa` for OpenAPI documentation.
-- The `app` module contains application-specific business rules and interfaces. It depends on `models`.
-- The `api` module adapts the core application to the web, handling HTTP concerns. It depends on `app` and `models`.
-- The `doc` module contains Utoipa OpenAPI models for generating interactive documentation. It depends on `api` and `models`.
-
-### Extending the Scaffold
-
-When extending the scaffold, developers are guided to maintain architectural boundaries:
-
-1. Add new domain models to the `models` module.
-2. Implement business logic in the `app::persistence` module.
-3. Create new API endpoints in the `api::routers` module.
-4. Update the `doc` module to include new OpenAPI models.
-
-By following this pattern, new features naturally align with clean architecture principles, ensuring the application remains modular, testable, and maintainable as it grows in complexity.
+The web framework is similarly contained. Swap Axum for Actix — you rewrite `api/routers/` and nothing else changes. The persistence layer doesn't know HTTP exists.
 
 ## Testing Philosophy
 
-We've adopted a comprehensive testing strategy that aligns with our clean architecture principles. Our approach emphasizes the separation of concerns not just in the application code, but also in our test suite. This philosophy ensures that our tests are as modular and maintainable as the code they're verifying.
+### Test Persistence, Not Routers
 
-We maintain a test structure that parallels our main project, facilitating easy navigation and encouraging comprehensive test coverage. Our approach includes isolated test environments, asynchronous testing, and easy CI/CD integration, ensuring robust quality assurance as the project evolves.
+Your routers are short functions that delegate to persistence. If persistence works, the router works. Put your coverage effort into `app::persistence`, and write one integration test per endpoint to verify wiring.
 
-### Types of Tests
+The test folder hierarchy mirrors the main project structure:
 
-We maintain a clear distinction between two primary types of tests:
+- `tests/app/` mirrors `app::persistence`
+- `tests/api/` mirrors `api::routers`
 
-1. **API Integration Tests**: These tests verify the behavior of our API endpoints, ensuring that our application correctly handles HTTP requests and responses.
-
-2. **Persistence Unit Tests**: These tests focus on the individual components of our business logic, verifying that DB operations function correctly in isolation.
-
-This separation allows us to pinpoint issues more accurately and maintain a clear understanding of where potential problems may lie.
-
-### Mirroring Project Structure in Tests
-
-One of the key principles of our testing philosophy is to maintain a test folder hierarchy that mirrors our main project structure. Specifically:
-
-- API tests follow the structure of `api::routers`
-- Persistence tests follow the structure of `app::persistence`
-
-This approach offers several benefits:
-
-- Easy navigation between source code and corresponding tests
-- Clear organization of test files
-- Encourages developers to write tests alongside new features
-
-Let's look at some examples to illustrate this approach:
-
-#### API Integration Tests
-
-```rust
-// tests/api/mod.rs
-#[tokio::test]
-async fn user_main() {
-    let db = setup_test_db("sqlite::user?mode=memory&cache=shared")
-        .await
-        .expect("Set up db failed!");
-
-    let app = setup_router(db);
-    test_post_users(app.clone()).await;
-    test_post_users_error(app.clone()).await;
-    test_get_users(app).await;
-}
-
-// tests/api/user.rs
-pub(super) async fn test_post_users(app: Router) {
-    let response = make_post_request(app, "/users", r#"{"username": "test"}"#.to_owned()).await;
-    assert_eq!(response.status(), StatusCode::CREATED);
-
-    let body = response.into_body().collect().await.unwrap().to_bytes();
-    assert_eq!(&body[..], br#"{"id":1,"username":"test"}"#);
-}
-
-// ... other test functions ...
-```
-
-#### Persistence Layer Unit Tests
+#### Persistence Unit Tests
 
 ```rust
 #[tokio::test]
@@ -370,78 +198,47 @@ pub(super) async fn test_user(db: &DatabaseConnection) -> Result<(), DbErr> {
 }
 ```
 
-### Additional Testing Considerations
+#### API Integration Tests
 
-Beyond the basic structure, our testing philosophy incorporates several other important aspects:
+```rust
+#[tokio::test]
+async fn user_main() {
+    let db = setup_test_db("sqlite::user?mode=memory&cache=shared")
+        .await
+        .expect("Set up db failed!");
 
-1. **Isolated Test Environments**: We use in-memory SQLite databases for tests, ensuring that each test runs in a clean, isolated environment.
+    let app = setup_router(db);
+    test_post_users(app.clone()).await;
+    test_post_users_error(app.clone()).await;
+    test_get_users(app).await;
+}
 
-2. **Comprehensive Coverage**: We aim to test both happy paths and error scenarios, as demonstrated by our `test_post_users_error` function.
+pub(super) async fn test_post_users(app: Router) {
+    let response = make_post_request(app, "/users", r#"{"username": "test"}"#.to_owned()).await;
+    assert_eq!(response.status(), StatusCode::CREATED);
 
-3. **Asynchronous Testing**: Our tests are designed to work with Rust's async/await syntax, reflecting the asynchronous nature of our application.
+    let body = response.into_body().collect().await.unwrap().to_bytes();
+    assert_eq!(&body[..], br#"{"id":1,"username":"test"}"#);
+}
+```
 
-4. **Parameterized Tests**: Where applicable, we use parameterized tests to cover multiple scenarios without duplicating code.
+Tests use in-memory SQLite databases for isolation. Both happy paths and error scenarios are covered (e.g., `test_post_users_error`). All tests are async, reflecting the application's async nature.
 
-5. **Continuous Integration**: Our test suite can be easily integrated into our CI/CD pipeline, ensuring that all tests pass before merging new code.
+## Adding a Feature
 
-By adhering to these principles, we ensure that our test suite remains a valuable tool for maintaining code quality and catching potential issues early in the development process. As the project grows, this testing philosophy will help us maintain confidence in our codebase and facilitate smoother evolution of our application.
+Every feature follows the same four steps:
 
-## Performance Considerations
+1. **`models/`** — Define your domain entity, input params, output schema, and query filter.
+2. **`app/persistence/`** — Implement the CRUD functions and business logic.
+3. **Write tests** — Cover the persistence layer thoroughly; add an integration test for wiring.
+4. **`api/routers/`** — Wire it to HTTP. Update `doc/` for OpenAPI.
 
-When it comes to web development, performance is often a critical factor. Our project doesn't just focus on architectural cleanliness—it's designed with performance in mind.
-
-While specific benchmarks would depend on use cases, our approach is production-ready for high-performance web services without sacrificing code maintainability.
-
-Let's explore some key performance aspects of our approach.
-
-### Rust's Performance Advantages
-
-By choosing Rust, we're already starting on a strong footing. Rust's zero-cost abstractions, compile-time checks, and lack of a garbage collector contribute to excellent runtime performance. This is particularly beneficial for web services that need to handle high concurrency and low latency.
-
-### Efficiency of Axum
-
-Axum, built on top of hyper and tokio, is designed for high performance. Its tower-based middleware approach and efficient routing contribute to minimal overhead. Our project leverages these strengths, ensuring that the architectural benefits don't come at the cost of speed.
-
-### Optimizing Database Operations
-
-While our project uses SeaORM for database operations, the clean architecture allows for easy optimization:
-
-1. **Query Optimization**: The separation of database logic in the `app::persistence` module allows for fine-tuning of database queries without affecting the rest of the application.
-
-2. **Connection Pooling Configuration**: We can adjust connection pooling parameters to maximize performance on our specific dedicated servers, whether on-premises or in the cloud.
-
-3. **Baked Queries**: We can use baked queries to reduce the overhead of converting ORM queries to SQL statements.
-
-### Scalability Through Clean Architecture
-
-The clean architecture of our project contributes to its scalability:
-
-1. **Separation of Concerns**: Makes it easier to optimize or replace individual components without affecting the entire system.
-
-2. **Stateless Design**: Our API handlers are designed to be stateless, facilitating horizontal scaling.
-
-3. **Easy Caching Integration**: The clear separation of layers makes it straightforward to introduce caching at various levels of the application.
-
-While performance optimizations can always be made, our project provides a sweet spot that doesn't sacrifice speed for cleanliness. As always, we recommend profiling and benchmarking for specific use cases to identify any bottlenecks and optimize accordingly.
+Step 4 should take minutes. If it takes longer, logic is leaking into the wrong layer. This consistent sequence is the payoff of the dependency rule: each layer has a clear, predictable role.
 
 ## Conclusion
 
-As we conclude our discussion, let's reflect on how this project addresses the web development framework dilemma we began with.
+Clean Architecture isn't about following a concentric circles diagram. It's about one rule: **dependencies flow inward**. Structure your code so that models know nothing of persistence, persistence knows nothing of HTTP, and each layer stands as though the others did not exist.
 
-Remember the tug-of-war between full-stack frameworks and micro-frameworks? The struggle to balance development speed, performance, and maintainability? Our project offers a compelling solution to these challenges.
+By combining this principle with Rust's type safety and Axum's efficiency, [clean-axum](https://github.com/kigawas/clean-axum) provides a scaffold that is structured without being rigid, performant without sacrificing clarity, and maintainable as complexity grows.
 
-By leveraging Rust's performance and safety, Axum's efficiency, and the principles of clean architecture, we've created a scaffold that:
-
-1. **Provides Structure Without Rigidity**: Unlike opinionated full-stack frameworks, our project offers a clear structure that guides development without constraining creativity.
-
-2. **Ensures High Performance**: We harness Rust and Axum's speed while our architectural choices facilitate optimizations and scalability.
-
-3. **Maintains Flexibility**: The clear separation of concerns allows for easy swapping of components, be it the database, the web framework, or even moving to a different architecture. If you don't like any part of our project, you can always modify it effortlessly.
-
-4. **Enhances Maintainability**: With a clear project structure and comprehensive testing philosophy, we've set the stage for long-term maintainability.
-
-5. **Speeds Up Development**: While not as instant as some dynamically-typed frameworks, our approach is still simple enough to accelerate development as projects grow in complexity.
-
-This approach demonstrates that with careful design, we can achieve performance, safety, and clean code simultaneously in web development. We believe our Clean Architecture approach with Rust and Axum offers a compelling solution to common web development challenges.
-
-You are invited to explore, build with, and contribute to this evolving project on [GitHub](https://github.com/kigawas/clean-axum).
+Explore, build with, and contribute to the project on [GitHub](https://github.com/kigawas/clean-axum).
