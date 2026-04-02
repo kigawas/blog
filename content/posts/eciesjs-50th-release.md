@@ -43,6 +43,7 @@ Other changes in this release:
 
 - The deprecated `utils` re-export from the main entry point has been removed. Use `import { ... } from "eciesjs/utils"` instead
 - Other deprecated APIs are removed as well
+- Refactoring and bug fixes in `utils` folder. There are some breaking changes here, but should not affect most users
 - Dependency updates across the board
 
 ## Adoption
