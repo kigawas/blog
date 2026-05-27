@@ -3,11 +3,9 @@ title = "eciesjs 0.5.0: Seven Years, Fifty Releases"
 date = "2026-04-03"
 cover = ""
 tags = ["JavaScript", "cryptography"]
-description = "The 50th release of the quietly influential JavaScript ECIES library."
+description = "The 50th release of the quietly influential JavaScript ECIES library"
 showFullContent = false
 +++
-
-*The 50th release of the quietly influential JavaScript ECIES library.*
 
 ## The Journey
 
