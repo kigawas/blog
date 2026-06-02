@@ -259,5 +259,3 @@ What will happen if we `dispatch` in `reducer`? An exercise for you.
 ### Conclusion
 
 Programming is about the art to control complexity. State containers not just separate the state and the logic but force you to think in an event-based and functional way, which is a ubiquitous pattern among many modern programming languages and frameworks.
-
-The code above can be found at [repl.it](https://repl.it/talk/share/Why-state-container-blog-code/80447).

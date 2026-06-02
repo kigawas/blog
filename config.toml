@@ -1,7 +1,7 @@
 baseURL = "/"
 disqusShortname = "kigawas-blog"
 enableGitInfo = true
-languageCode = "en-us"
+locale = "en-us"
 theme = "terminal"
 title = "map(learn, world)"
 
@@ -73,3 +73,8 @@ url = "/about"
 identifier = "projects"
 name = "Projects"
 url = "/projects"
+
+[markup]
+  [markup.goldmark.renderer]
+    hardWraps = false
+    unsafe = true
