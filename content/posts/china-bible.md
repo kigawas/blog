@@ -84,13 +84,13 @@ The transcription and translation below are my own, and provisional: the old pri
 
 ## Appendix: The Full Passage
 
-*Meʾor ʿEinayim*, *Imrei Binah* ch. 11, from Benjacob's Vilna 1863 edition (p. 152), with my English beneath each paragraph. The text breaks off mid-sentence, where dei Rossi turns to qualify the ancient picture against the discoveries of his own century. Editorial clarifications and reconstructed words are in [square brackets].
+*Meʾor ʿEinayim*, *Imrei Binah* ch. 11, from Benjacob's Vilna 1863 edition (p. 152), with English beneath each paragraph. The text breaks off mid-sentence, where dei Rossi turns to qualify the ancient picture against the discoveries of his own century. Editorial clarifications and reconstructed words are in [square brackets]. The English translation of quoted verses is from the [NET](https://en.wikipedia.org/wiki/New_English_Translation).
 
 > **1.**
 >
 > <p lang="he" dir="rtl" style="font-family: 'Noto Sans Hebrew', sans-serif; text-align: right;">…קדמונים או חדשים מקרוב באו. והלא על כאלה אמר נעים זמירות: כל האדם כוזב, ובנו החכם ובעל נסיון קיים אחריו אין אדם שלא יחטא, דמטבע הן במעשיו אשר מצד הגוף וחושיו, הן בדעות אשר מצד הנפש וכחותיה.</p>
 >
-> …ancients, or newcomers lately arrived? And surely it was of such men that the sweet singer [David] said, "All men are false" (Ps. 116:11), and his wise and experienced son [Solomon] affirmed after him, "there is no man who does not sin" (1 Kings 8:46) — for this is innate to them, whether in their deeds, which proceed from the body and its senses, or in their opinions, which proceed from the soul and its faculties.
+> …ancients, or newcomers lately arrived? And surely it was of such men that the sweet singer [David] said, "All men are liars" (Ps. 116:11), and his wise and experienced son [Solomon] affirmed after him, "there is no man who is sinless" (1 Kings 8:46) — for this is innate to them, whether in their deeds, which proceed from the body and its senses, or in their opinions, which proceed from the soul and its faculties.
 >
 > **2.**
 >
@@ -126,13 +126,13 @@ The transcription and translation below are my own, and provisional: the old pri
 >
 > <p lang="he" dir="rtl" style="font-family: 'Noto Sans Hebrew', sans-serif; text-align: right;">כי אמרו כתורף הדברים אשר כתב החכם ישראלי בספרו יסוד עולם שער ב׳ סוף פרק ב׳ וז״ל: הנה נתבאר ועלה בידינו כי באמרו ית׳ יקוו המים נחלק כדור הארץ לשני חצאין, האחד מגולה לאויר אשר בחלק ידוע ממנו כנזכר התפשט הישוב, והחצי השני הוא מכוסה במי הים הגדול טבוע בהם, כי זהו לרוקע הארץ על המים והוא על ימים יסדה עכ״ל.</p>
 >
-> For they spoke in keeping with what the sage [Isaac] Israeli wrote in his book *Yesod ʿOlam*, gate 2, end of chapter 2, in these words: "Behold, it has been made clear and established by us that when He, may He be blessed, said, 'Let the waters be gathered' (Gen. 1:9), the sphere of the earth was divided into two halves. The one is exposed to the air, and in a known portion of it the habitation spread out; while the second half is covered over by the waters of the Great Sea, submerged in them — for this is the meaning of 'Him who spread the earth upon the waters' (Ps. 136:6), and 'He founded it upon the seas' (Ps. 24:2)" — thus far his words.
+> For they spoke in keeping with what the sage [Isaac] Israeli wrote in his book *Yesod ʿOlam*, gate 2, end of chapter 2, in these words: "Behold, it has been made clear and established by us that when He, may He be blessed, said, 'Let the water be gathered' (Gen. 1:9), the sphere of the earth was divided into two halves. The one is exposed to the air, and in a known portion of it the habitation spread out; while the second half is covered over by the waters of the Great Sea, submerged in them — for this is the meaning of 'The one who spread out the earth over the water' (Ps. 136:6), and 'He set its foundation upon the seas' (Ps. 24:2)" — thus far his words.
 >
 > **8.**
 >
 > <p lang="he" dir="rtl" style="font-family: 'Noto Sans Hebrew', sans-serif; text-align: right;">וכן תמצא לחכם א״ע ׳ולקמחי ז״ל בתחלת מזמור לה׳ הארץ ומלואה שהכדור חציו העליון מגולה וחציו התחתון נתון במים.</p>
 >
-> And likewise you will find in Ibn Ezra and Kimchi, of blessed memory, at the beginning of [their comment on] the psalm "The earth is the LORD's and its fullness" (Ps. 24:1) — that the upper half of the sphere is exposed and its lower half is set within the waters.
+> And likewise you will find in Ibn Ezra and Kimchi, of blessed memory, at the beginning of [their comment on] the psalm "The LORD owns the earth and all it contains" (Ps. 24:1) — that the upper half of the sphere is exposed and its lower half is set within the waters.
 >
 > **9.**
 >
